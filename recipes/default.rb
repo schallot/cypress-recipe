@@ -23,7 +23,7 @@ directory "/opt/popHealth" do
 end
 
 git "popHealth master" do
-  source "https://github.com/pophealth/popHealth.git"
+  repository "https://github.com/pophealth/popHealth.git"
   destination "/opt/pophealth"
   action :sync
 end
