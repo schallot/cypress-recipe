@@ -24,7 +24,7 @@ end
 
 git "popHealth master" do
   repository "https://github.com/pophealth/popHealth.git"
-  destination "/opt/pophealth"
+  destination "/opt/popHealth"
   action :sync
 end
 
