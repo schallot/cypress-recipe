@@ -17,7 +17,7 @@ end
 directory "/opt/popHealth" do
   owner node[:popHealth][:user]
   group node[:popHealth][:user]
-  mode 0744
+  mode 755
   action :create
   recursive true
 end
@@ -31,7 +31,7 @@ end
 directory "/data/db" do
   owner "ubuntu"
   group "ubuntu"
-  mode 00755
+  mode 755
   action :create
   recursive true
 end
