@@ -1,0 +1,8 @@
+/opt/infogen/log/*.log {
+        missingok
+        notifempty
+        daily
+        rotate 7
+        compress
+        copytruncate
+}
