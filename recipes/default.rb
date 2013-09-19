@@ -17,7 +17,7 @@ end
 directory "/opt/popHealth" do
   owner node[:popHealth][:user]
   group node[:popHealth][:user]
-  mode 0644
+  mode 0744
   action :create
   recursive true
 end
