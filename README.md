@@ -24,7 +24,7 @@ From there you will need to download the recipes that this one depends on and zi
     
     mkdir /tmp/cookbooks
     cd /tmp/cookbooks
-    sudo apt-get install git
+    sudo apt-get install -y git
     git clone https://github.com/opscode-cookbooks/build-essential.git
     git clone https://github.com/opscode-cookbooks/dmg.git
     git clone https://github.com/opscode-cookbooks/runit.git
