@@ -47,6 +47,16 @@ After that it's a simple matter of running chef-solo and pointing it at that dir
 
 This will run and automatically configure popHealth. 
 
+If you need to change some settings, you can specify a node.json file and pass a path to it with the -j flag. An example node.json file is below:
+
+    {
+    "popHealth":
+        {
+                "branch" : "develop"
+        }
+    }
+
+
 
 ### Chef-Client
 
