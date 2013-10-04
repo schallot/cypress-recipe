@@ -25,7 +25,7 @@ end
 git "popHealth master" do
   repository "https://github.com/pophealth/popHealth.git"
   destination "/opt/popHealth"
-  revision node[:pophealth][:branch]
+  revision node[:popHealth][:branch]
   action :sync
 end
 
