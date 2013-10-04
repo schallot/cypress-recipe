@@ -147,7 +147,7 @@ service "nginx" do
   action [:enable, :start]
 end
 
-bash "start mongodb server" do
-  user "root"
-  code "mongod --fork --syslog"
+service "mongod" do
+  supports :start => true, :stop => true, :restart => true
+  action [:enable, :start]
 end
