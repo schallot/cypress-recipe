@@ -39,7 +39,7 @@ From there you will need to download the recipes that this one depends on and zi
     git clone https://github.com/opscode-cookbooks/firewall.git
     git clone https://github.com/schreiaj/popHealth-recipe.git popHealth
     cd ..
-    tar -cvzf cookbooks.tar.gz .
+    tar -cvzf cookbooks.tar.gz cookbooks
 
 After that it's a simple matter of running chef-solo and pointing it at that directory. 
 
