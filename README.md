@@ -43,7 +43,7 @@ From there you will need to download the recipes that this one depends on and zi
 
 After that it's a simple matter of running chef-solo and pointing it at that directory. 
 
-    sudo chef-solo -r /tmp/cookbooks.tar.gz -o "git, ruby-build, mongodb-10gen, popHealth"
+    sudo chef-solo -r /tmp/cookbooks.tar.gz -o "git,ruby-build,mongodb-10gen,popHealth"
 
 This will run and automatically configure popHealth. 
 
@@ -52,7 +52,7 @@ This will run and automatically configure popHealth.
 
 If you have a chef-server set up on your network this recipe makes it fairly simple to deploy an instance of popHealth. Simply add all of the dependencies above as recipes for your chef-server (ask whoever manages your chef-server to do this) and ensure they are uploaded. Then you can bootstrap a node for popHealth using
 
-    knife bootstrap -x [user] --sudo -N popHealth -r "git, ruby-build, mongodb-10gen, popHealth" --no-host-key-verify [IP or FQDN]
+    knife bootstrap -x [user] --sudo -N popHealth -r "git,ruby-build,mongodb-10gen,popHealth" --no-host-key-verify [IP or FQDN]
 
 You will be prompted for a password (you may also pass a -i with a path to an ssh key) and it will deploy. 
 
