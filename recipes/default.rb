@@ -147,7 +147,7 @@ service "nginx" do
   action [:enable, :start]
 end
 
-service "mongod" do
+service "mongodb" do
   supports :start => true, :stop => true, :restart => true
-  action [:enable, :start]
+  action [:enable, :restart]
 end
