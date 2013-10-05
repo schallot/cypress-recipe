@@ -12,7 +12,9 @@ while getopts ":b:h:" o; do
         b)
             branch=${OPTARG}
             ;;
-        h)
+        *)
+			usage
+			;;
     esac
 done
 
