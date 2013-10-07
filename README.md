@@ -14,7 +14,7 @@ This recipe can be used to build an instance of popHealth in a couple ways.
 ### Chef-Solo
 Chef-Solo is branch of Chef that is designed to run only on a local machine. The easiest method of installation is to use our installer script:
 
-    curl -L https://raw.github.com/rbclark/popHealth-recipe/multiple-branch-pull/install.sh > popHealth-install.sh
+    curl -L https://raw.github.com/schreiaj/popHealth-recipe/master/install.sh > popHealth-install.sh
     chmod +x popHealth-install.sh
     sudo ./popHealth-install.sh
 
