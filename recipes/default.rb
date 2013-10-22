@@ -25,6 +25,7 @@ directory rails_app_path do
 end
 
 git "popHealth #{node[:popHealth][:branch]}" do
+  user node[:popHealth][:user]
   repository "https://github.com/pophealth/popHealth.git"
   destination "/opt/popHealth"
   revision node[:popHealth][:branch]
