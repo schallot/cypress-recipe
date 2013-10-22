@@ -19,7 +19,7 @@ end
 directory rails_app_path do
   owner node[:popHealth][:user]
   group node[:popHealth][:user]
-  mode 755
+  mode 0755
   action :create
   recursive true
 end
@@ -32,9 +32,9 @@ git "popHealth #{node[:popHealth][:branch]}" do
 end
 
 directory "/data/db" do
-  owner "ubuntu"
-  group "ubuntu"
-  mode 755
+  owner node[:popHealth][:user]
+  group node[:popHealth][:user]
+  mode 0755
   action :create
   recursive true
 end
