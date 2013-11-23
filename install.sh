@@ -28,8 +28,6 @@ if ! command -v chef-solo >/dev/null 2>&1; then
   ./chef-install.sh
 fi
 
-mkdir /tmp/cookbooks
-cd /tmp/cookbooks
 if command -v git >/dev/null 2>&1; then
   echo "Git is installed, nothing to do here!"
 elif command -v apt-get >/dev/null 2>&1; then
@@ -43,27 +41,38 @@ else
   exit 1
 fi
 
-git clone https://github.com/opscode-cookbooks/build-essential.git
-git clone https://github.com/opscode-cookbooks/dmg.git
-git clone https://github.com/opscode-cookbooks/runit.git
-git clone https://github.com/opscode-cookbooks/windows.git
-git clone https://github.com/opscode-cookbooks/chef_handler.git
-git clone https://github.com/higanworks-cookbooks/mongodb-10gen.git
-git clone https://github.com/opscode-cookbooks/apt.git
-git clone https://github.com/opscode-cookbooks/git.git
-git clone https://github.com/schreiaj/ruby-build-recipe.git ruby-build
-git clone https://github.com/opscode-cookbooks/yum.git
-git clone https://github.com/opscode-cookbooks/fail2ban.git
-git clone https://github.com/opscode-cookbooks/firewall.git
-git clone https://github.com/schreiaj/popHealth-recipe.git popHealth
+if [ ! -d "/tmp/cookbooks" ]; then # We will not clone recipes again if the cookbooks directory already exists.
+  mkdir /tmp/cookbooks
+  cd /tmp/cookbooks
+  
+  git clone https://github.com/opscode-cookbooks/build-essential.git
+  git clone https://github.com/opscode-cookbooks/dmg.git
+  git clone https://github.com/opscode-cookbooks/runit.git
+  git clone https://github.com/opscode-cookbooks/windows.git
+  git clone https://github.com/opscode-cookbooks/chef_handler.git
+  git clone https://github.com/higanworks-cookbooks/mongodb-10gen.git
+  git clone https://github.com/opscode-cookbooks/apt.git
+  git clone https://github.com/opscode-cookbooks/git.git
+  git clone https://github.com/fnichol/chef-rvm.git rvm
+  git clone https://github.com/opscode-cookbooks/sudo.git
+  git clone https://github.com/hw-cookbooks/chef_gem.git
+  git clone https://github.com/opscode-cookbooks/yum.git
+  git clone https://github.com/opscode-cookbooks/fail2ban.git
+  git clone https://github.com/opscode-cookbooks/firewall.git
+  git clone https://github.com/opscode-cookbooks/apache2.git
+  git clone https://github.com/opscode-cookbooks/unicorn.git
+  git clone https://github.com/opscode-cookbooks/logrotate.git
+  git clone https://github.com/schreiaj/popHealth-recipe.git popHealth # remove this when debugging the recipe
+  # cp -r /vagrant /tmp/cookbooks/popHealth # Use for debugging with Vagrant
+fi
 
-cd ..
+cd /tmp
 
 tar -cvzf cookbooks.tar.gz cookbooks/
 
 if [ $branch ]; then
   echo '{"popHealth":{"branch" : "'$branch'"}}' > node.json
-  chef-solo -r /tmp/cookbooks.tar.gz -o "apt,git,ruby-build,popHealth" -j /tmp/node.json
+  chef-solo -r /tmp/cookbooks.tar.gz -o "apt,git,popHealth" -j /tmp/node.json
 else
-  chef-solo -r /tmp/cookbooks.tar.gz -o "apt,git,ruby-build,popHealth"
+  chef-solo -r /tmp/cookbooks.tar.gz -o "apt,git,popHealth"
 fi

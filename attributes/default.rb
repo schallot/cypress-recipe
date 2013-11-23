@@ -1,4 +1,5 @@
-default[:popHealth][:user] = "ubuntu"
-default[:popHealth][:ruby_version] = "1.9.3-p385"
-default[:popHealth]["passenger-version"] = "4.0.5"
+default[:popHealth][:user] = "popHealth"
 default[:popHealth][:branch] = "master"
+default[:popHealth][:ruby_version] = "1.9.3-p385"
+default[:popHealth][:passenger_version] = "3.0.18"
+default[:popHealth][:servername] = "localhost"
