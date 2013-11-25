@@ -1,6 +1,6 @@
 default[:popHealth][:user] = "popHealth"
 default[:popHealth][:branch] = "master"
-default[:popHealth][:ruby_version] = "1.9.3-p385"
+default[:popHealth][:ruby_version] = "1.9.3-p484"
 default[:popHealth][:passenger_version] = "3.0.18"
 default[:popHealth][:servername] = "localhost"
 default[:popHealth][:environment] = "production"
