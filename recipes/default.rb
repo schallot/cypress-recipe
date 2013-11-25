@@ -4,6 +4,9 @@ include_recipe "rvm::system_install"
 user_home = "/home/" + node[:popHealth][:user]
 ruby_version = node[:popHealth][:ruby_version]
 rails_app_path = user_home + "/popHealth"
+bundle_gem_path = "/usr/local/rvm/gems/ruby-#{node[:popHealth][:ruby_version]}"
+install_params = "--deployment --without develop test" if node[:popHealth][:environment] == "production"
+apache_dir = "/etc/apache2"
 
 user node[:popHealth][:user] do
   supports :manage_home => true
@@ -80,11 +83,15 @@ rvm_shell "passenger_module" do
   code "passenger-install-apache2-module --auto"
 end
 
+# Fixes issue where changing ruby version causes bundler to throw a permissions error.
+directory bundle_gem_path do
+  mode 0775
+end
+
 rvm_shell "run bundle install" do 
   cwd rails_app_path
   ruby_string node[:popHealth][:ruby_version]
-  code "bundle install --path /usr/local/rvm/gems/ruby-#{node[:popHealth][:ruby_version]}"
-  #code "GEM_SPEC_CACHE='#{user_home}/.gem/specs' bundle install"
+  code "RAILS_ENV=#{node[:popHealth][:environment]} bundle install --path #{bundle_gem_path} #{install_params}"
   user node[:popHealth][:user]
   group "rvm"
 end
@@ -92,18 +99,22 @@ end
 rvm_shell "seed database" do 
   cwd rails_app_path
   ruby_string node[:popHealth][:ruby_version]
-  code "bundle exec rake db:seed RAILS_ENV=production"
+  code "bundle exec rake db:seed RAILS_ENV=#{node[:popHealth][:environment]}"
   user node[:popHealth][:user]
 end
 
-template "/etc/apache2/sites-enabled/000-default" do
+template "#{apache_dir}/sites-available/pophealth" do
   source "pophealth-sites-available.conf.erb"
   variables({
     :pophealth_root => rails_app_path + "/public"
   })
 end
 
-template "/etc/apache2/mods-enabled/pophealth.conf" do
+link "#{apache_dir}/sites-enabled/000-default" do
+  to "#{apache_dir}/sites-available/pophealth"
+end
+
+template "#{apache_dir}/mods-available/pophealth.conf" do
   source "pophealth-mods-available.conf.erb"
   variables({
     :mod_passenger => "/usr/local/rvm/gems/ruby-#{node[:popHealth][:ruby_version]}/gems/passenger-#{node[:popHealth][:passenger_version]}/ext/apache2/mod_passenger.so",
@@ -112,7 +123,11 @@ template "/etc/apache2/mods-enabled/pophealth.conf" do
   })
 end
 
-template "/etc/apache2/httpd.conf" do
+link "#{apache_dir}/mods-enabled/pophealth.conf" do
+  to "#{apache_dir}/mods-available/pophealth.conf" 
+end
+
+template "#{apache_dir}/httpd.conf" do
   source "httpd.conf.erb"
   variables({
     :servername => node[:popHealth][:servername]
