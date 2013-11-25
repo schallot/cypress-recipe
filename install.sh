@@ -63,8 +63,13 @@ if [ ! -d "/tmp/cookbooks" ]; then # We will not clone recipes again if the cook
   git clone https://github.com/opscode-cookbooks/unicorn.git
   git clone https://github.com/opscode-cookbooks/logrotate.git
   git clone https://github.com/schreiaj/popHealth-recipe.git popHealth # remove this when debugging the recipe
-  # cp -r /vagrant /tmp/cookbooks/popHealth # Use for debugging with Vagrant
 fi
+
+# Uncomment the following 4 lines if using vagrant to debug recipe changes.
+# cd /tmp/cookbooks
+# rm -rf popHealth
+# mkdir popHealth # Create directory if using vagrant
+# cp -r /vagrant/* /tmp/cookbooks/popHealth # Use for debugging with Vagrant
 
 cd /tmp
 
