@@ -4,6 +4,9 @@
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
+Vagrant.require_plugin "vagrant-berkshelf"
+Vagrant.require_plugin "vagrant-omnibus"
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
@@ -22,8 +25,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :forwarded_port, guest: 80, host: 8080, auto_correct: true
   config.vm.network :forwarded_port, guest: 443, host: 4343, auto_correct: true
 
-  # Run our install script on the server.
-  config.vm.provision :shell, :path => "install.sh"
+  # Install the latest version of Chef (uses https://github.com/schisamo/vagrant-omnibus)
+  config.omnibus.chef_version = :latest
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -39,9 +42,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       "--cpus", "4"
     ]
   end
-  #
-  # View the documentation for the provider you're using for more
-  # information on available options.
+  
+  # The path to the Berksfile to use with Vagrant Berkshelf
+  # config.berkshelf.berksfile_path = "./Berksfile"
 
+  # Enabling the Berkshelf plugin. To enable this globally, add this configuration
+  # option to your ~/.vagrant.d/Vagrantfile file
+  # Plugin must be installed from 
+  config.berkshelf.enabled = true
 
+  config.vm.provision :chef_solo do |chef|
+    chef.cookbooks_path = "."
+    chef.run_list = [
+        "recipe[apt]", "recipe[git]", "recipe[popHealth::default]"
+    ]
+  end
 end
