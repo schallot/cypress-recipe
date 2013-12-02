@@ -52,6 +52,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.berkshelf.enabled = true
 
   config.vm.provision :chef_solo do |chef|
+    # If you want to override attributes, you can do so by uncommenting the following lines.
+    #
+    # chef.json = {
+    #     "popHealth" => {
+    #         "environment" => "development"
+    #     }
+    # }
     chef.cookbooks_path = "."
     chef.run_list = [
         "recipe[apt]", "recipe[git]", "recipe[popHealth::default]"
