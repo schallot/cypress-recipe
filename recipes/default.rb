@@ -137,8 +137,9 @@ end
 rvm_shell "precompile assets" do 
   cwd rails_app_path
   ruby_string node[:popHealth][:ruby_version]
-  code "bundle exec rake assets:precompile"
+  code "bundle exec rake assets:precompile RAILS_ENV=#{node[:popHealth][:environment]}"
   user node[:popHealth][:user]
+  only_if { node[:popHealth][:environment].eql? "production" }
 end
 
 service "apache2" do
