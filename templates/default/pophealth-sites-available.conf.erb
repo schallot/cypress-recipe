@@ -6,6 +6,7 @@
 
 <VirtualHost *:80>
    DocumentRoot <%= @pophealth_root %>
+   RailsEnv <%= @pophealth_env %>
    <Directory <%= @pophealth_root %>>
       AllowOverride all
       Options -MultiViews

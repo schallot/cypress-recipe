@@ -106,7 +106,8 @@ end
 template "#{apache_dir}/sites-available/pophealth" do
   source "pophealth-sites-available.conf.erb"
   variables({
-    :pophealth_root => rails_app_path + "/public"
+    :pophealth_root => rails_app_path + "/public",
+    :pophealth_env => node[:popHealth][:environment]
   })
 end
 
