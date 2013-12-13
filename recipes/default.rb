@@ -1,148 +1,149 @@
 include_recipe "mongodb-10gen::single"
+include_recipe "rvm::system_install"
 
 user_home = "/home/" + node[:popHealth][:user]
 ruby_version = node[:popHealth][:ruby_version]
-rails_app_path = "/opt/popHealth"
+rails_app_path = user_home + "/popHealth"
+bundle_gem_path = "/usr/local/rvm/gems/ruby-#{node[:popHealth][:ruby_version]}"
+install_params = "--deployment --without develop test" if node[:popHealth][:environment] == "production"
+apache_dir = "/etc/apache2"
 
-package "libxml2-dev" do
+user node[:popHealth][:user] do
+  supports :manage_home => true
+  gid "rvm"
+  comment "#{node[:popHealth][:user]} User"
+  home "/home/" + node[:popHealth][:user]
+  shell "/bin/bash"
+  action :create
+end
+
+sudo node[:popHealth][:user] do
+  user node[:popHealth][:user] 
+  nopasswd true
+end
+
+rvm_default_ruby node[:popHealth][:ruby_version] do
+  action :create
+end
+
+rvm_gem "bundler" do
+  ruby_string node[:popHealth][:ruby_version]
   action :install
 end
 
-package "libxslt1-dev" do
+rvm_gem "chef" do
+  ruby_string node[:popHealth][:ruby_version]
   action :install
 end
 
-package "unison" do
+%w{openssl libssl-dev libreadline6 libreadline6-dev curl zlib1g zlib1g-dev libyaml-dev libsqlite3-dev sqlite3 libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion pkg-config libxml2-dev libxslt1-dev unison build-essential}.each do |pkg|
+  package pkg do
+    action :install
+  end
+end
+
+# Passenger Dependencies
+%w{libcurl4-openssl-dev apache2-mpm-prefork apache2-prefork-dev libapr1-dev libaprutil1-dev}.each do |pkg|
+  package pkg do
+    action :install
+  end
+end
+
+rvm_gem "passenger" do
+  ruby_string node[:popHealth][:ruby_version]
+  version node[:popHealth][:passenger_version]
   action :install
 end
 
 directory rails_app_path do
   owner node[:popHealth][:user]
   group node[:popHealth][:user]
-  mode 755
+  mode 0755
   action :create
   recursive true
 end
 
-git "popHealth #{node[:popHealth][:branch]}" do
+git "clone popHealth #{node[:popHealth][:branch]}" do
+  user node[:popHealth][:user]
   repository "https://github.com/pophealth/popHealth.git"
-  destination "/opt/popHealth"
+  destination rails_app_path
   revision node[:popHealth][:branch]
   action :sync
 end
 
 directory "/data/db" do
-  owner "ubuntu"
-  group "ubuntu"
-  mode 755
+  owner node[:popHealth][:user]
+  group node[:popHealth][:user]
+  mode 0755
   action :create
   recursive true
 end
 
-ruby_block "setup-environment" do
-  block do    
-    ENV['RUBY_VERSION'] = "#{ruby_version}"
-    ENV['RUBY_PATH'] = user_home + "/local/" + ENV['RUBY_VERSION']
-    ENV['RUBY_BIN_PATH'] = ENV['RUBY_PATH'] + '/bin'
-    ENV['RAILS_ENV'] = "production"
-    ENV['PATH'] = ENV['RUBY_BIN_PATH'] + ":" + ENV['PATH']
-  end
+rvm_shell "passenger_module" do
+  code "passenger-install-apache2-module --auto"
 end
 
-# Install make and compiler required by passenger-install
-package "build-essential" do
-  action :install
+# Fixes issue where changing ruby version causes bundler to throw a permissions error.
+directory bundle_gem_path do
+  mode 0775
 end
 
-bash "setup-ruby" do
-  user node[:popHealth][:user]
+rvm_shell "run bundle install" do 
   cwd rails_app_path
-  code <<-EOF
-    ruby-build $RUBY_VERSION $RUBY_PATH
-    echo "export PATH=\"$RUBY_BIN_PATH:\\$PATH\"" >> #{user_home}/.bashrc
-    sudo chown #{node['popHealth']['user']} . -R
-    gem install bundler --no-rdoc --no-ri
-    gem install passenger -v #{node[:popHealth]['passenger-version']} --no-rdoc --no-ri
-    gem install rake --no-ri --no-rdoc
-  EOF
+  ruby_string node[:popHealth][:ruby_version]
+  code "RAILS_ENV=#{node[:popHealth][:environment]} bundle install --path #{bundle_gem_path} #{install_params}"
+  user node[:popHealth][:user]
+  group "rvm"
 end
 
-bash "setup-popHealth" do
-  user node[:popHealth][:user]
+rvm_shell "seed database" do 
   cwd rails_app_path
-  code <<-EOH
-    bundle install --deployment --without development test
-    bundle exec rake db:create
-    bundle exec rake db:schema:load
-    bundle exec rake db:seed
-    bundle exec rake assets:precompile
-    rm -f db/seeds.rb
-  EOH
-end
-
-# Required for passenger-install-nginx-module
-package "libcurl4-openssl-dev" do
-  action :install
-end
-
-bash "passenger-install-nginx-module" do
-  user "root"
-  cwd user_home
-  code <<-EOH
-    passenger-install-nginx-module --auto --auto-download --prefix=/opt/nginx
-  EOH
-end
-
-bash "setup-ssl" do
-  user "root"
-  cwd "/opt/nginx/conf"
-  code <<-EOH
-    # generate the keys 
-    ssh-keygen -q -t rsa -N "" -f popHealth.key
-
-    openssl req -new -key popHealth.key -batch -out popHealth.csr
-    openssl x509 -req -days 365 -in popHealth.csr -signkey popHealth.key -out popHealth.crt
-    
-    # remove csr
-    rm popHealth.csr
-    sudo chmod 600 /opt/nginx/conf/popHealth.{key,crt}
-  EOH
-end
-
-ruby_block "create /opt/nginx/conf/nginx.conf from template" do
-  block do
-    res = Chef::Resource::Template.new "/opt/nginx/conf/nginx.conf", run_context
-    res.source "nginx.conf.erb"
-    res.cookbook cookbook_name.to_s
-    res.variables(
-      passenger_root: "#{ENV["RUBY_PATH"]}/lib/ruby/gems/1.9.1/gems/passenger-#{node[:popHealth]["passenger-version"]}",
-      passenger_ruby: "#{ENV["RUBY_PATH"]}/bin/ruby",
-      root: "#{rails_app_path}/public"
-    )
-    res.run_action :create
-  end
-end
-
-bash "setup_ssh_config" do
+  ruby_string node[:popHealth][:ruby_version]
+  code "bundle exec rake db:seed RAILS_ENV=#{node[:popHealth][:environment]}"
   user node[:popHealth][:user]
-  cwd user_home
-  code "echo 'StrictHostKeyChecking no' >> .ssh/config"
 end
 
-
-cookbook_file "/etc/init.d/nginx" do
-  source "init_d_script"
-  mode 0755
+template "#{apache_dir}/sites-available/pophealth" do
+  source "pophealth-sites-available.conf.erb"
+  variables({
+    :pophealth_root => rails_app_path + "/public",
+    :pophealth_env => node[:popHealth][:environment]
+  })
 end
 
-cookbook_file "/etc/logrotate.d/popHealth" do
-  source "logrotate"
-  owner "root"
-  group "root"
-  mode 0644
+link "#{apache_dir}/sites-enabled/000-default" do
+  to "#{apache_dir}/sites-available/pophealth"
 end
 
-service "nginx" do
+template "#{apache_dir}/mods-available/pophealth.conf" do
+  source "pophealth-mods-available.conf.erb"
+  variables({
+    :mod_passenger => "/usr/local/rvm/gems/ruby-#{node[:popHealth][:ruby_version]}/gems/passenger-#{node[:popHealth][:passenger_version]}/ext/apache2/mod_passenger.so",
+    :passenger_root => "/usr/local/rvm/gems/ruby-#{node[:popHealth][:ruby_version]}/gems/passenger-#{node[:popHealth][:passenger_version]}",
+    :passenger_ruby => "/usr/local/rvm/wrappers/ruby-#{node[:popHealth][:ruby_version]}/ruby"
+  })
+end
+
+link "#{apache_dir}/mods-enabled/pophealth.conf" do
+  to "#{apache_dir}/mods-available/pophealth.conf" 
+end
+
+template "#{apache_dir}/httpd.conf" do
+  source "httpd.conf.erb"
+  variables({
+    :servername => node[:popHealth][:servername]
+  })
+end
+
+rvm_shell "precompile assets" do 
+  cwd rails_app_path
+  ruby_string node[:popHealth][:ruby_version]
+  code "bundle exec rake assets:precompile RAILS_ENV=#{node[:popHealth][:environment]}"
+  user node[:popHealth][:user]
+  only_if { node[:popHealth][:environment].eql? "production" }
+end
+
+service "apache2" do
   supports :start => true, :stop => true, :restart => true
-  action [:enable, :start]
+  action [:enable, :restart]
 end
