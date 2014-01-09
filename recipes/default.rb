@@ -65,7 +65,7 @@ end
 
 git "clone popHealth #{node[:popHealth][:branch]}" do
   user node[:popHealth][:user]
-  repository "https://github.com/pophealth/popHealth.git"
+  repository node[:popHealth][:git_repository]
   destination rails_app_path
   revision node[:popHealth][:branch]
   action :sync
@@ -147,3 +147,5 @@ service "apache2" do
   supports :start => true, :stop => true, :restart => true
   action [:enable, :restart]
 end
+
+include_recipe "popHealth::cron" if node[:popHealth][:enable_cron]
