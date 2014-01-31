@@ -135,7 +135,7 @@ end
 template "#{apache_dir}/mods-available/pophealth.conf" do
   source "pophealth-mods-available.conf.erb"
   variables({
-    :mod_passenger => "/usr/local/rvm/gems/ruby-#{node[:popHealth][:ruby_version]}/gems/passenger-#{node[:popHealth][:passenger_version]}/ext/apache2/mod_passenger.so",
+    :mod_passenger => "/usr/local/rvm/gems/ruby-#{node[:popHealth][:ruby_version]}/gems/passenger-#{node[:popHealth][:passenger_version]}/buildout/apache2/mod_passenger.so",
     :passenger_root => "/usr/local/rvm/gems/ruby-#{node[:popHealth][:ruby_version]}/gems/passenger-#{node[:popHealth][:passenger_version]}",
     :passenger_ruby => "/usr/local/rvm/wrappers/ruby-#{node[:popHealth][:ruby_version]}/ruby"
   })
