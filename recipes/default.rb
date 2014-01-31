@@ -88,6 +88,23 @@ directory bundle_gem_path do
   mode 0775
 end
 
+template "#{rails_app_path}/config/popHealth.yml" do
+  source "pophealth-config.yml.erb"
+  variables({
+    :app_config => node[:popHealth][:app_config],
+    :environment => node[:popHealth][:environment]
+  })
+  helpers do
+    def generate_yaml(config,num)
+      config_elements = YAML::dump(config).split("\n") # Dump yaml and then convert into an array.
+      config_elements.shift # Remove first element from the array.
+      config_elements.map! { |a| " "*num + a } # Indent results.
+      result = config_elements.join("\n") # Convert results back into a string.
+      result.sub("!ruby/hash:Chef::Node::ImmutableMash","") # Remove unwanted text from the string and return.
+    end
+  end
+end
+
 rvm_shell "run bundle install" do 
   cwd rails_app_path
   ruby_string node[:popHealth][:ruby_version]

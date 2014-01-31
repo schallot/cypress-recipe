@@ -6,3 +6,4 @@ default[:popHealth][:git_repository] = "https://github.com/pophealth/popHealth.g
 default[:popHealth][:servername] = "localhost"
 default[:popHealth][:environment] = "production"
 default[:popHealth][:enable_cron] = false
+default[:popHealth][:app_config] = {}
