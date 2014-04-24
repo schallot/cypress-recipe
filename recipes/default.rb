@@ -1,6 +1,7 @@
 include_recipe "mongodb::10gen_repo"
 include_recipe "mongodb::default"
 include_recipe "rvm::system_install"
+rvm_default_ruby node[:popHealth][:ruby_version]
 
 user_home = "/home/" + node[:popHealth][:user]
 ruby_version = node[:popHealth][:ruby_version]
@@ -21,10 +22,6 @@ end
 sudo node[:popHealth][:user] do
   user node[:popHealth][:user] 
   nopasswd true
-end
-
-rvm_default_ruby node[:popHealth][:ruby_version] do
-  action :create
 end
 
 rvm_gem "bundler" do
