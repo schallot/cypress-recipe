@@ -6,14 +6,16 @@ json_file = "dna.json"
 # If this is run on chef server then cookbook_dir will be nil, since chef server provides the same functionality
 # of this recipe then there is no need to enable this functionality on chef server.
 if !cookbook_dir.nil?
+  root_cookbook_dir = "#{cookbook_dir}/.."
+
   directory chef_root do
     action :create
   end
 
   # Copy cookbooks to new location if they are not already in the local cookbook directory
   bash "copy cookbooks" do
-    code "cp -r #{cookbook_dir}/.. #{local_cookbook_dir}"
-    not_if Dir.open(cookbook_dir).path.eql? local_cookbook_dir
+    code "cp -r #{root_cookbook_dir} #{local_cookbook_dir}"
+    not_if { Pathname.new(root_cookbook_dir).cleanpath.to_s.eql? local_cookbook_dir }
   end
 
   template "#{chef_root}/#{json_file}" do
