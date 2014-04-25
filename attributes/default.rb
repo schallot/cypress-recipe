@@ -7,5 +7,5 @@ default[:popHealth][:servername] = "localhost"
 default[:popHealth][:environment] = "production"
 default[:popHealth][:enable_cron] = false
 default[:popHealth][:app_config] = {}
-override['rvm']['group_users'] = [default[:popHealth][:user]]
-override['rvm']['default_ruby'] = default[:popHealth][:ruby_version]
+override[:rvm][:group_users] = [default[:popHealth][:user]]
+override[:rvm][:default_ruby] = default[:popHealth][:ruby_version]
