@@ -1,4 +1,5 @@
-include_recipe "mongodb-10gen::single"
+include_recipe "mongodb::10gen_repo"
+include_recipe "mongodb::default"
 include_recipe "rvm::system_install"
 
 user_home = "/home/" + node[:popHealth][:user]
