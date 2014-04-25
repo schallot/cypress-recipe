@@ -82,7 +82,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # }
     chef.cookbooks_path = "."
     chef.run_list = [
-        "recipe[apt]", "recipe[git]", "recipe[popHealth::default]"
+        "recipe[apt]", "recipe[git]", "recipe[popHealth::default]", "recipe[popHealth::cron]"
     ]
   end
 end
