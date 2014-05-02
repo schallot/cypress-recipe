@@ -158,8 +158,8 @@ rvm_shell "precompile assets" do
   only_if { node[:popHealth][:environment].eql? "production" }
 end
 
-template "#{user_home}/start_delayed_job.sh" do
-  source "start_delayed_job.sh.erb"
+template "#{user_home}/delayed_job.sh" do
+  source "delayed_job.sh.erb"
   owner node[:popHealth][:user]
   mode "700"
   variables({
