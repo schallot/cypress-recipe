@@ -1,0 +1,6 @@
+start on started mongodb
+stop on stopping mongodb
+
+script
+exec sudo -u <%= @username %> <%= @user_path %>/start_delayed_job.sh >> /tmp/delayed_worker.log 2>&1
+end script

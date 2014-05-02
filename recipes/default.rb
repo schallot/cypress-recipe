@@ -158,6 +158,24 @@ rvm_shell "precompile assets" do
   only_if { node[:popHealth][:environment].eql? "production" }
 end
 
+template "#{user_home}/start_delayed_job.sh" do
+  source "start_delayed_job.sh.erb"
+  owner node[:popHealth][:user]
+  mode "700"
+  variables({
+    :pophealth_path => rails_app_path,
+    :rvm_path => node[:rvm][:root_path]
+  })
+end
+
+template "/etc/init/delayed_worker.conf" do
+  source "delayed_worker.conf.erb"
+  variables({
+    :username => node[:popHealth][:user],
+    :user_path => user_home
+  })
+end
+
 service "apache2" do
   supports :start => true, :stop => true, :restart => true
   action [:enable, :restart]
