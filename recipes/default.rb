@@ -20,7 +20,7 @@ user node[:popHealth][:user] do
 end
 
 sudo node[:popHealth][:user] do
-  user node[:popHealth][:user] 
+  user node[:popHealth][:user]
   nopasswd true
 end
 
@@ -103,7 +103,7 @@ template "#{rails_app_path}/config/popHealth.yml" do
   end
 end
 
-rvm_shell "run bundle install" do 
+rvm_shell "run bundle install" do
   cwd rails_app_path
   ruby_string node[:popHealth][:ruby_version]
   code "RAILS_ENV=#{node[:popHealth][:environment]} bundle install --path #{bundle_gem_path} #{install_params}"
@@ -111,7 +111,7 @@ rvm_shell "run bundle install" do
   group "rvm"
 end
 
-rvm_shell "seed database" do 
+rvm_shell "seed database" do
   cwd rails_app_path
   ruby_string node[:popHealth][:ruby_version]
   code "bundle exec rake db:seed RAILS_ENV=#{node[:popHealth][:environment]}"
@@ -140,7 +140,7 @@ template "#{apache_dir}/mods-available/pophealth.conf" do
 end
 
 link "#{apache_dir}/mods-enabled/pophealth.conf" do
-  to "#{apache_dir}/mods-available/pophealth.conf" 
+  to "#{apache_dir}/mods-available/pophealth.conf"
 end
 
 template "#{apache_dir}/httpd.conf" do
@@ -150,7 +150,7 @@ template "#{apache_dir}/httpd.conf" do
   })
 end
 
-rvm_shell "precompile assets" do 
+rvm_shell "precompile assets" do
   cwd rails_app_path
   ruby_string node[:popHealth][:ruby_version]
   code "bundle exec rake assets:precompile RAILS_ENV=#{node[:popHealth][:environment]}"
@@ -158,8 +158,8 @@ rvm_shell "precompile assets" do
   only_if { node[:popHealth][:environment].eql? "production" }
 end
 
-template "#{user_home}/delayed_job.sh" do
-  source "delayed_job.sh.erb"
+template "#{user_home}/start_delayed_job.sh" do
+  source "start_delayed_job.sh.erb"
   owner node[:popHealth][:user]
   mode "700"
   variables({
@@ -174,6 +174,10 @@ template "/etc/init/delayed_worker.conf" do
     :username => node[:popHealth][:user],
     :user_path => user_home
   })
+end
+
+cookbook_file "/etc/init/delayed_workers.conf" do
+  source "delayed_workers.conf"
 end
 
 service "apache2" do

@@ -1,10 +1,12 @@
-start on started mongodb
+description "Start a delayed job by supplying an ID. For example: start delayed_worker ID=1. See also: resque-workers.conf"
+
 stop on stopping mongodb
 
-script
-exec sudo -u <%= @username %> <%= @user_path %>/delayed_job.sh start
-end script
+respawn
+respawn limit 5 20
 
-post-stop script
-exec sudo -u <%= @username %> <%= @user_path %>/delayed_job.sh stop
+instance $ID
+
+script
+  exec sudo -u <%= @username %> <%= @user_path %>/start_delayed_job.sh $ID >> /tmp/delayed_worker.log 2>&1
 end script
