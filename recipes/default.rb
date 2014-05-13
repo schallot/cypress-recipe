@@ -69,6 +69,10 @@ git "clone popHealth #{node[:popHealth][:branch]}" do
   action :sync
 end
 
+file "#{rails_app_path}/.ruby-version" do
+  action :delete
+end
+
 directory "/data/db" do
   owner node[:popHealth][:user]
   group node[:popHealth][:user]
