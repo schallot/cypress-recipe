@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# This file actually starts the different workers as needed. It takes an id which is matched to the index of the QUEUE.
+
+export QUEUE=(calculate rollup import)
+
+cd <%= @pophealth_path %>
+. <%= @rvm_path %>/scripts/rvm
+bundle exec script/delayed_job run --queue=${QUEUE[$1]}

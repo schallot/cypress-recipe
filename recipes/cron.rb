@@ -1,19 +1,30 @@
 cookbook_dir = run_context.cookbook_collection[cookbook_name].root_dir
 local_cookbook_dir = "/var/chef/cookbooks"
+local_roles_dir = "/var/chef/roles"
+
 chef_root = "/etc/chef"
 json_file = "dna.json"
 
 # If this is run on chef server then cookbook_dir will be nil, since chef server provides the same functionality
 # of this recipe then there is no need to enable this functionality on chef server.
 if !cookbook_dir.nil?
+  root_cookbook_dir = "#{cookbook_dir}/.."
+  root_roles_dir = "#{root_cookbook_dir}/../roles"
+  running_from_cron = Pathname.new(root_cookbook_dir).cleanpath.to_s.eql? local_cookbook_dir
+
   directory chef_root do
     action :create
   end
 
   # Copy cookbooks to new location if they are not already in the local cookbook directory
   bash "copy cookbooks" do
-    code "cp -r #{cookbook_dir}/.. #{local_cookbook_dir}"
-    not_if Dir.open(cookbook_dir).path.eql? local_cookbook_dir
+    code "cp -r #{root_cookbook_dir} #{local_cookbook_dir}"
+    not_if { running_from_cron }
+  end
+
+  bash "copy roles" do
+    code "cp -r #{root_roles_dir} #{local_roles_dir}"
+    not_if { running_from_cron || !File.exist?(root_roles_dir)  }
   end
 
   template "#{chef_root}/#{json_file}" do

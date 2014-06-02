@@ -1,5 +1,7 @@
-include_recipe "mongodb-10gen::single"
+include_recipe "mongodb::10gen_repo"
+include_recipe "mongodb::default"
 include_recipe "rvm::system_install"
+rvm_default_ruby node[:popHealth][:ruby_version]
 
 user_home = "/home/" + node[:popHealth][:user]
 ruby_version = node[:popHealth][:ruby_version]
@@ -18,12 +20,8 @@ user node[:popHealth][:user] do
 end
 
 sudo node[:popHealth][:user] do
-  user node[:popHealth][:user] 
+  user node[:popHealth][:user]
   nopasswd true
-end
-
-rvm_default_ruby node[:popHealth][:ruby_version] do
-  action :create
 end
 
 rvm_gem "bundler" do
@@ -71,6 +69,10 @@ git "clone popHealth #{node[:popHealth][:branch]}" do
   action :sync
 end
 
+file "#{rails_app_path}/.ruby-version" do
+  action :delete
+end
+
 directory "/data/db" do
   owner node[:popHealth][:user]
   group node[:popHealth][:user]
@@ -105,7 +107,7 @@ template "#{rails_app_path}/config/popHealth.yml" do
   end
 end
 
-rvm_shell "run bundle install" do 
+rvm_shell "run bundle install" do
   cwd rails_app_path
   ruby_string node[:popHealth][:ruby_version]
   code "RAILS_ENV=#{node[:popHealth][:environment]} bundle install --path #{bundle_gem_path} #{install_params}"
@@ -113,7 +115,7 @@ rvm_shell "run bundle install" do
   group "rvm"
 end
 
-rvm_shell "seed database" do 
+rvm_shell "seed database" do
   cwd rails_app_path
   ruby_string node[:popHealth][:ruby_version]
   code "bundle exec rake db:seed RAILS_ENV=#{node[:popHealth][:environment]}"
@@ -142,7 +144,7 @@ template "#{apache_dir}/mods-available/pophealth.conf" do
 end
 
 link "#{apache_dir}/mods-enabled/pophealth.conf" do
-  to "#{apache_dir}/mods-available/pophealth.conf" 
+  to "#{apache_dir}/mods-available/pophealth.conf"
 end
 
 template "#{apache_dir}/httpd.conf" do
@@ -152,12 +154,34 @@ template "#{apache_dir}/httpd.conf" do
   })
 end
 
-rvm_shell "precompile assets" do 
+rvm_shell "precompile assets" do
   cwd rails_app_path
   ruby_string node[:popHealth][:ruby_version]
   code "bundle exec rake assets:precompile RAILS_ENV=#{node[:popHealth][:environment]}"
   user node[:popHealth][:user]
   only_if { node[:popHealth][:environment].eql? "production" }
+end
+
+template "#{user_home}/start_delayed_job.sh" do
+  source "start_delayed_job.sh.erb"
+  owner node[:popHealth][:user]
+  mode "700"
+  variables({
+    :pophealth_path => rails_app_path,
+    :rvm_path => node[:rvm][:root_path]
+  })
+end
+
+template "/etc/init/delayed_worker.conf" do
+  source "delayed_worker.conf.erb"
+  variables({
+    :username => node[:popHealth][:user],
+    :user_path => user_home
+  })
+end
+
+cookbook_file "/etc/init/delayed_workers.conf" do
+  source "delayed_workers.conf"
 end
 
 service "apache2" do
