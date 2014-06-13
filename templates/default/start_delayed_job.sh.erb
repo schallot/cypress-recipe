@@ -6,4 +6,4 @@ export QUEUE=(calculate rollup import)
 
 cd <%= @pophealth_path %>
 . <%= @rvm_path %>/scripts/rvm
-bundle exec script/delayed_job run --queue=${QUEUE[$1]}
+RAILS_ENV=<%= @rails_env %> bundle exec script/delayed_job run --queue=${QUEUE[$1]}

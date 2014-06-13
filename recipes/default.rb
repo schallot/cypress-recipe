@@ -168,7 +168,8 @@ template "#{user_home}/start_delayed_job.sh" do
   mode "700"
   variables({
     :pophealth_path => rails_app_path,
-    :rvm_path => node[:rvm][:root_path]
+    :rvm_path => node[:rvm][:root_path],
+    :rails_env => node[:popHealth][:environment]
   })
 end
 
