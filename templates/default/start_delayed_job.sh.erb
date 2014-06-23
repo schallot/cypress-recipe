@@ -2,8 +2,6 @@
 
 # This file actually starts the different workers as needed. It takes an id which is matched to the index of the QUEUE.
 
-export QUEUE=(calculation rollup patient_import)
-
 cd <%= @pophealth_path %>
 . <%= @rvm_path %>/scripts/rvm
-RAILS_ENV=<%= @rails_env %> bundle exec script/delayed_job run -n$(($1+1)) --queue=${QUEUE[$1]}
+RAILS_ENV=<%= @rails_env %> bundle exec script/delayed_job start -n<%= @queue_count %> --queues=<%= @queue_names %>
