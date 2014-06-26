@@ -169,20 +169,18 @@ template "#{user_home}/start_delayed_job.sh" do
   variables({
     :pophealth_path => rails_app_path,
     :rvm_path => node[:rvm][:root_path],
-    :rails_env => node[:popHealth][:environment]
+    :rails_env => node[:popHealth][:environment],
+    :queue_count => node[:popHealth][:queue_count],
+    :queue_names => node[:popHealth][:queue_names].join(",")
   })
 end
 
-template "/etc/init/delayed_worker.conf" do
-  source "delayed_worker.conf.erb"
+template "/etc/init/delayed_workers.conf" do
+  source "delayed_workers.conf.erb"
   variables({
     :username => node[:popHealth][:user],
     :user_path => user_home
   })
-end
-
-cookbook_file "/etc/init/delayed_workers.conf" do
-  source "delayed_workers.conf"
 end
 
 service "apache2" do
