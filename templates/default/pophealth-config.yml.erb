@@ -20,9 +20,63 @@ defaults: &defaults
   ccr_system_name: popHealth
   # force the system to allow HTTP connections
   force_unsecure_communications: true
+  use_map_reduce_prefilter: true
+  enable_map_reduce_rationale: true
+  enable_map_reduce_logging: false
+  #provider type to exclude EH measures from
+  eh_exclusion_type: "Division"
+  orphan_provider:
+    root: "popHealth"
+    extension: "Orphans"
   value_sets:
     ticket_url: https://vsac.nlm.nih.gov/vsac/ws/Ticket
     api_url: https://vsac.nlm.nih.gov/vsac/ws/RetrieveValueSet
+  cda_header:
+    :identifier:
+      :root:
+      :extension:
+    :authors:
+    - :ids:
+      - :root: author_root
+        :extension: author_extension
+      :device:
+        :name: device_name
+        :model: device_model
+      :addresses: []
+      :telecoms: []
+      :time:
+      :organization:
+        :ids:
+        - :root: authors_organization_root
+          :extension: authors_organization_ext
+        :name: ''
+    :custodian:
+      :ids:
+      - :root: custodian_root
+        :extension: custodian_ext
+      :person:
+        :given: ''
+        :family: ''
+      :organization:
+        :ids:
+        - :root: custodian_rganization_root
+          :extension: custodian_organization_ext
+        :name: ''
+    :legal_authenticator:
+      :ids:
+      - :root: legal_authenticator_root
+        :extension: legal_authenticator_ext
+      :addresses: []
+      :telecoms: []
+      :time:
+      :person:
+        :given:
+        :family:
+      :organization:
+        :ids:
+        - :root: legal_authenticator_org_root
+          :extension: legal_authenticator_org_ext
+        :name: ''
 
 development:
   <<: *defaults
