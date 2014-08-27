@@ -29,7 +29,7 @@ You will be prompted for a password (you may also pass a -i with a path to an ss
 If you wish to stand up a local copy of this recipe for testing, there is a vagrant recipe included in this repository. If you have never installed vagrant before, then you will need to do so along with downloading a few other tools. Please follow the steps below before running the `vagrant up` command from the directory you have this repository cloned into.
 
 1. Install [Vagrant](http://www.vagrantup.com/downloads.html) ">= 1.5.2"
-2. Install [Virtualbox]("https://www.virtualbox.org/") ">= 4.3.14"
+2. Install [Virtualbox](https://www.virtualbox.org/) ">= 4.3.14"
 3. Install [ChefDK](http://getchef.com/downloads/chef-dk) ">= 0.2.0"
 
 Once those steps are completed, you should be able to execute `vagrant up` with no problems.
