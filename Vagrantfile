@@ -7,7 +7,7 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Install required plugins
-  plugins = ['vagrant-omnibus', "vagrant-berkshelf --plugin-version '2.0.0.rc3'"]
+  plugins = ['vagrant-omnibus', "vagrant-berkshelf"]
   # Vagrant does not detect new plugins right away. In order to get around this, if we 
   # have added any plugins then we simply set reload to true and tell the user to re-run
   # the vagrant command.
