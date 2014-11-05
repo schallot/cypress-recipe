@@ -31,7 +31,7 @@ if !cookbook_dir.nil?
     source "dna.json.erb"
     variables({
       :run_list => node.run_list.to_json,
-      :overrides => node[:popHealth].to_json
+      :overrides => node[:cypress].to_json
     })
   end
 

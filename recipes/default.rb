@@ -1,36 +1,36 @@
 include_recipe "mongodb::10gen_repo"
 include_recipe "mongodb::default"
 include_recipe "rvm::system_install"
-rvm_default_ruby node[:popHealth][:ruby_version]
+rvm_default_ruby node[:cypress][:ruby_version]
 
-user_home = "/home/" + node[:popHealth][:user]
-ruby_version = node[:popHealth][:ruby_version]
-rails_app_path = user_home + "/popHealth"
-bundle_gem_path = "/usr/local/rvm/gems/ruby-#{node[:popHealth][:ruby_version]}"
-install_params = "--deployment --without develop test" if node[:popHealth][:environment] == "production"
+user_home = "/home/" + node[:cypress][:user]
+ruby_version = node[:cypress][:ruby_version]
+rails_app_path = user_home + "/cypress"
+bundle_gem_path = "/usr/local/rvm/gems/ruby-#{node[:cypress][:ruby_version]}"
+install_params = "--deployment --without develop test" if node[:cypress][:environment] == "production"
 apache_dir = "/etc/apache2"
 
-user node[:popHealth][:user] do
+user node[:cypress][:user] do
   supports :manage_home => true
   gid "rvm"
-  comment "#{node[:popHealth][:user]} User"
-  home "/home/" + node[:popHealth][:user]
+  comment "#{node[:cypress][:user]} User"
+  home "/home/" + node[:cypress][:user]
   shell "/bin/bash"
   action :create
 end
 
-sudo node[:popHealth][:user] do
-  user node[:popHealth][:user]
+sudo node[:cypress][:user] do
+  user node[:cypress][:user]
   nopasswd true
 end
 
 rvm_gem "bundler" do
-  ruby_string node[:popHealth][:ruby_version]
+  ruby_string node[:cypress][:ruby_version]
   action :install
 end
 
 rvm_gem "chef" do
-  ruby_string node[:popHealth][:ruby_version]
+  ruby_string node[:cypress][:ruby_version]
   action :install
 end
 
@@ -48,24 +48,24 @@ end
 end
 
 rvm_gem "passenger" do
-  ruby_string node[:popHealth][:ruby_version]
-  version node[:popHealth][:passenger_version]
+  ruby_string node[:cypress][:ruby_version]
+  version node[:cypress][:passenger_version]
   action :install
 end
 
 directory rails_app_path do
-  owner node[:popHealth][:user]
-  group node[:popHealth][:user]
+  owner node[:cypress][:user]
+  group node[:cypress][:user]
   mode 0755
   action :create
   recursive true
 end
 
-git "clone popHealth #{node[:popHealth][:branch]}" do
-  user node[:popHealth][:user]
-  repository node[:popHealth][:git_repository]
+git "clone cypress #{node[:cypress][:branch]}" do
+  user node[:cypress][:user]
+  repository node[:cypress][:git_repository]
   destination rails_app_path
-  revision node[:popHealth][:branch]
+  revision node[:cypress][:branch]
   action :sync
 end
 
@@ -74,8 +74,8 @@ file "#{rails_app_path}/.ruby-version" do
 end
 
 directory "/data/db" do
-  owner node[:popHealth][:user]
-  group node[:popHealth][:user]
+  owner node[:cypress][:user]
+  group node[:cypress][:user]
   mode 0755
   action :create
   recursive true
@@ -90,11 +90,11 @@ directory bundle_gem_path do
   mode 0775
 end
 
-template "#{rails_app_path}/config/popHealth.yml" do
-  source "pophealth-config.yml.erb"
+template "#{rails_app_path}/config/cypress.yml" do
+  source "cypress-config.yml.erb"
   variables({
-    :app_config => node[:popHealth][:app_config],
-    :environment => node[:popHealth][:environment]
+    :app_config => node[:cypress][:app_config],
+    :environment => node[:cypress][:environment]
   })
   helpers do
     def generate_yaml(config,num)
@@ -109,76 +109,76 @@ end
 
 rvm_shell "run bundle install" do
   cwd rails_app_path
-  ruby_string node[:popHealth][:ruby_version]
-  code "RAILS_ENV=#{node[:popHealth][:environment]} bundle install --path #{bundle_gem_path} #{install_params}"
-  user node[:popHealth][:user]
+  ruby_string node[:cypress][:ruby_version]
+  code "RAILS_ENV=#{node[:cypress][:environment]} bundle install --path #{bundle_gem_path} #{install_params}"
+  user node[:cypress][:user]
   group "rvm"
 end
 
 rvm_shell "seed database" do
   cwd rails_app_path
-  ruby_string node[:popHealth][:ruby_version]
-  code "bundle exec rake db:seed RAILS_ENV=#{node[:popHealth][:environment]}"
-  user node[:popHealth][:user]
+  ruby_string node[:cypress][:ruby_version]
+  code "bundle exec rake db:seed RAILS_ENV=#{node[:cypress][:environment]}"
+  user node[:cypress][:user]
 end
 
-template "#{apache_dir}/sites-available/pophealth" do
-  source "pophealth-sites-available.conf.erb"
+template "#{apache_dir}/sites-available/cypress" do
+  source "cypress-sites-available.conf.erb"
   variables({
-    :pophealth_root => rails_app_path + "/public",
-    :pophealth_env => node[:popHealth][:environment]
+    :cypress_root => rails_app_path + "/public",
+    :cypress_env => node[:cypress][:environment]
   })
 end
 
 link "#{apache_dir}/sites-enabled/000-default" do
-  to "#{apache_dir}/sites-available/pophealth"
+  to "#{apache_dir}/sites-available/cypress"
 end
 
-template "#{apache_dir}/mods-available/pophealth.conf" do
-  source "pophealth-mods-available.conf.erb"
+template "#{apache_dir}/mods-available/cypress.conf" do
+  source "cypress-mods-available.conf.erb"
   variables({
-    :mod_passenger => "/usr/local/rvm/gems/ruby-#{node[:popHealth][:ruby_version]}/gems/passenger-#{node[:popHealth][:passenger_version]}/buildout/apache2/mod_passenger.so",
-    :passenger_root => "/usr/local/rvm/gems/ruby-#{node[:popHealth][:ruby_version]}/gems/passenger-#{node[:popHealth][:passenger_version]}",
-    :passenger_ruby => "/usr/local/rvm/wrappers/ruby-#{node[:popHealth][:ruby_version]}/ruby"
+    :mod_passenger => "/usr/local/rvm/gems/ruby-#{node[:cypress][:ruby_version]}/gems/passenger-#{node[:cypress][:passenger_version]}/buildout/apache2/mod_passenger.so",
+    :passenger_root => "/usr/local/rvm/gems/ruby-#{node[:cypress][:ruby_version]}/gems/passenger-#{node[:cypress][:passenger_version]}",
+    :passenger_ruby => "/usr/local/rvm/wrappers/ruby-#{node[:cypress][:ruby_version]}/ruby"
   })
 end
 
-link "#{apache_dir}/mods-enabled/pophealth.conf" do
-  to "#{apache_dir}/mods-available/pophealth.conf"
+link "#{apache_dir}/mods-enabled/cypress.conf" do
+  to "#{apache_dir}/mods-available/cypress.conf"
 end
 
 template "#{apache_dir}/httpd.conf" do
   source "httpd.conf.erb"
   variables({
-    :servername => node[:popHealth][:servername]
+    :servername => node[:cypress][:servername]
   })
 end
 
 rvm_shell "precompile assets" do
   cwd rails_app_path
-  ruby_string node[:popHealth][:ruby_version]
-  code "bundle exec rake assets:precompile RAILS_ENV=#{node[:popHealth][:environment]}"
-  user node[:popHealth][:user]
-  only_if { node[:popHealth][:environment].eql? "production" }
+  ruby_string node[:cypress][:ruby_version]
+  code "bundle exec rake assets:precompile RAILS_ENV=#{node[:cypress][:environment]}"
+  user node[:cypress][:user]
+  only_if { node[:cypress][:environment].eql? "production" }
 end
 
 template "#{user_home}/start_delayed_job.sh" do
   source "start_delayed_job.sh.erb"
-  owner node[:popHealth][:user]
+  owner node[:cypress][:user]
   mode "700"
   variables({
-    :pophealth_path => rails_app_path,
+    :cypress_path => rails_app_path,
     :rvm_path => node[:rvm][:root_path],
-    :rails_env => node[:popHealth][:environment],
-    :queue_count => node[:popHealth][:queue_count],
-    :queue_names => node[:popHealth][:queue_names].join(",")
+    :rails_env => node[:cypress][:environment],
+    :queue_count => node[:cypress][:queue_count],
+    :queue_names => node[:cypress][:queue_names].join(",")
   })
 end
 
 template "/etc/init/delayed_workers.conf" do
   source "delayed_workers.conf.erb"
   variables({
-    :username => node[:popHealth][:user],
+    :username => node[:cypress][:user],
     :user_path => user_home
   })
 end
@@ -188,4 +188,4 @@ service "apache2" do
   action [:enable, :restart]
 end
 
-include_recipe "popHealth::cron" if node[:popHealth][:enable_cron]
+include_recipe "cypress::cron" if node[:cypress][:enable_cron]

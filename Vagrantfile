@@ -76,13 +76,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # If you want to override attributes, you can do so by uncommenting the following lines.
     #
     # chef.json = {
-    #     "popHealth" => {
+    #     "cypress" => {
     #         "environment" => "development"
     #     }
     # }
     chef.cookbooks_path = "."
     chef.run_list = [
-        "recipe[apt]", "recipe[git]", "recipe[popHealth::default]", "recipe[popHealth::cron]"
+        "recipe[apt]", "recipe[git]", "recipe[cypress::default]", "recipe[cypress::cron]"
     ]
   end
 end
