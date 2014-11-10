@@ -10,6 +10,11 @@ bundle_gem_path = "/usr/local/rvm/gems/ruby-#{node[:cypress][:ruby_version]}"
 install_params = "--deployment --without develop test" if node[:cypress][:environment] == "production"
 apache_dir = "/etc/apache2"
 
+user node[:current_user] do
+  gid "rvm"
+  action :modify
+end
+
 user node[:cypress][:user] do
   supports :manage_home => true
   gid "rvm"
