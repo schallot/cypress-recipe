@@ -90,27 +90,10 @@ directory bundle_gem_path do
   mode 0775
 end
 
-template "#{rails_app_path}/config/cypress.yml" do
-  source "cypress-config.yml.erb"
-  variables({
-    :app_config => node[:cypress][:app_config],
-    :environment => node[:cypress][:environment]
-  })
-  helpers do
-    def generate_yaml(config,num)
-      config_elements = YAML::dump(config).split("\n") # Dump yaml and then convert into an array.
-      config_elements.shift # Remove first element from the array.
-      config_elements.map! { |a| " "*num + a } # Indent results.
-      result = config_elements.join("\n") # Convert results back into a string.
-      result.sub("!ruby/hash:Chef::Node::ImmutableMash","") # Remove unwanted text from the string and return.
-    end
-  end
-end
-
 rvm_shell "run bundle install" do
   cwd rails_app_path
   ruby_string node[:cypress][:ruby_version]
-  code "RAILS_ENV=#{node[:cypress][:environment]} bundle install --path #{bundle_gem_path} #{install_params}"
+  code "bundle install --path #{bundle_gem_path} #{install_params}"
   user node[:cypress][:user]
   group "rvm"
 end
@@ -122,16 +105,17 @@ rvm_shell "seed database" do
   user node[:cypress][:user]
 end
 
-template "#{apache_dir}/sites-available/cypress" do
+template "#{apache_dir}/sites-available/cypress.conf" do
   source "cypress-sites-available.conf.erb"
   variables({
     :cypress_root => rails_app_path + "/public",
-    :cypress_env => node[:cypress][:environment]
+    :cypress_env => node[:cypress][:environment],
+    :passenger_ruby => "/usr/local/rvm/wrappers/ruby-#{node[:cypress][:ruby_version]}/ruby"
   })
 end
 
-link "#{apache_dir}/sites-enabled/000-default" do
-  to "#{apache_dir}/sites-available/cypress"
+link "#{apache_dir}/sites-enabled/000-default.conf" do
+  to "#{apache_dir}/sites-available/cypress.conf"
 end
 
 template "#{apache_dir}/mods-available/cypress.conf" do

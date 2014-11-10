@@ -5,10 +5,12 @@
 #
 
 <VirtualHost *:80>
+   PassengerRuby <%= @passenger_ruby %>
    DocumentRoot <%= @cypress_root %>
-   RailsEnv <%= @cypress_env %>
+   TimeOut 1200
    <Directory <%= @cypress_root %>>
       AllowOverride all
       Options -MultiViews
+      Require all granted
    </Directory> 
 </VirtualHost>
