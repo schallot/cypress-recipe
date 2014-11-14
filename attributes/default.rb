@@ -1,6 +1,6 @@
 default[:cypress][:user] = "cypress"
 default[:cypress][:branch] = "master"
-default[:cypress][:ruby_version] = "2.1.2"
+default[:cypress][:ruby_version] = "2.1.5"
 default[:cypress][:passenger_version] = "4.0.50"
 default[:cypress][:git_repository] = "https://github.com/projectcypress/cypress.git"
 default[:cypress][:servername] = "localhost"
