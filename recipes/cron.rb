@@ -54,10 +54,8 @@ if !cookbook_dir.nil?
     home "/home/cypress/cypress"
     shell "/bin/bash"
     path "/usr/local/rvm/scripts/rvm"
-    command %Q{
-      cd /home/cypress/cypress &&
-      bundle exec rake measure_evaluation_validator:cleanup RAILS_ENV=production &&
-      bundle exec rake measure_evaluation_validator:evaluate_all[,5,5] RAILS_ENV=production
-    }
+    command "cd /home/cypress/cypress &&"\
+      "bundle exec rake measure_evaluation_validator:cleanup RAILS_ENV=production &&"\
+      "bundle exec rake measure_evaluation_validator:evaluate_all[,5,5] RAILS_ENV=production"
   end
 end
