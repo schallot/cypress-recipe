@@ -153,14 +153,12 @@ template "#{user_home}/start_delayed_job.sh" do
   variables({
     :cypress_path => rails_app_path,
     :rvm_path => node[:rvm][:root_path],
-    :rails_env => node[:cypress][:environment],
-    :queue_count => node[:cypress][:queue_count],
-    :queue_names => node[:cypress][:queue_names].join(",")
+    :rails_env => node[:cypress][:environment]
   })
 end
 
-template "/etc/init/delayed_workers.conf" do
-  source "delayed_workers.conf.erb"
+template "/etc/init/delayed_worker.conf" do
+  source "delayed_worker.conf.erb"
   variables({
     :username => node[:cypress][:user],
     :user_path => user_home

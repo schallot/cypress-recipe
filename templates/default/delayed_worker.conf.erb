@@ -1,8 +1,5 @@
-description "Start multiple delayed jobs. Change attributes for queue_name and queue_count in chef recipe based on your needs."
-
 start on started mongodb
-
-task
+stop on stopping mongodb
 
 script
   exec sudo -u <%= @username %> <%= @user_path %>/start_delayed_job.sh >> /tmp/delayed_worker.log 2>&1
