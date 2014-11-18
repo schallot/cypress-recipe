@@ -38,7 +38,9 @@ if !cookbook_dir.nil?
   template "#{chef_root}/solo.rb" do
     source "solo.rb.erb"
     variables({
-      :json_attribs => "#{chef_root}/#{json_file}"
+      :json_attribs => "#{chef_root}/#{json_file}",
+      :http_proxy => ENV["http_proxy"],
+      :https_proxy => ENV["https_proxy"]
     })
   end
 
