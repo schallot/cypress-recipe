@@ -138,6 +138,19 @@ template "#{apache_dir}/httpd.conf" do
   })
 end
 
+template "#{apache_dir}/conf-available/cypress.conf" do
+  source "cypress-conf-available.conf.erb"
+  action :create_if_missing
+  sensitive true
+  variables({
+    :secret_key_base => SecureRandom.hex(64)
+  })
+end
+
+link "#{apache_dir}/conf-enabled/cypress.conf" do
+  to "#{apache_dir}/conf-available/cypress.conf"
+end
+
 rvm_shell "precompile assets" do
   cwd rails_app_path
   ruby_string node[:cypress][:ruby_version]
