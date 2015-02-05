@@ -1,6 +1,9 @@
 include_recipe "mongodb::10gen_repo"
 include_recipe "mongodb::default"
 include_recipe "rvm::system_install"
+
+require 'securerandom'
+
 rvm_default_ruby node[:cypress][:ruby_version]
 
 user_home = "/home/" + node[:cypress][:user]
@@ -129,6 +132,19 @@ end
 
 link "#{apache_dir}/mods-enabled/cypress.conf" do
   to "#{apache_dir}/mods-available/cypress.conf"
+end
+
+template "#{apache_dir}/conf-available/cypress.conf" do
+  source "cypress-conf-available.conf.erb"
+  action :create_if_missing
+  sensitive true
+  variables({
+    :secret_key_base => SecureRandom.hex(64)
+  })
+end
+
+link "#{apache_dir}/conf-enabled/cypress.conf" do
+  to "#{apache_dir}/conf-available/cypress.conf"
 end
 
 template "#{apache_dir}/httpd.conf" do
