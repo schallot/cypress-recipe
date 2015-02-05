@@ -11,3 +11,4 @@ default[:cypress][:queue_count] = 1
 default[:cypress][:queue_names] =  ["calculation"]
 override[:rvm][:group_users] = [default[:cypress][:user]]
 override[:rvm][:default_ruby] = default[:cypress][:ruby_version]
+override[:rvm][:gpg][:keyserver] = "hkp://keys.gnupg.net"
