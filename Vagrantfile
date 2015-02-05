@@ -80,9 +80,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #         "environment" => "development"
     #     }
     # }
+    if !ENV['HTTP_PROXY'].nil?
+      chef.custom_config_path = "Vagrantfile.chef"
+    end
     chef.cookbooks_path = "."
     chef.run_list = [
-        "recipe[apt]", "recipe[git]", "recipe[cypress::default]", "recipe[cypress::cron]"
+        "recipe[apt]", "recipe[git]", "recipe[rvm::vagrant]", "recipe[cypress::default]", "recipe[cypress::cron]"
     ]
   end
 end
