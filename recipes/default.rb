@@ -139,7 +139,7 @@ template "#{apache_dir}/conf-available/cypress.conf" do
   action :create_if_missing
   sensitive true
   variables({
-    :secret_key_base => SecureRandom.hex(64)
+    :secret_key_base => SecureRandom.hex(64),
     :devise_secret_key => SecureRandom.hex(64)
   })
 end
