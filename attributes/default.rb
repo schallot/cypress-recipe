@@ -5,7 +5,6 @@ default[:cypress][:passenger_version] = "4.0.50"
 default[:cypress][:git_repository] = "https://github.com/projectcypress/cypress.git"
 default[:cypress][:servername] = "localhost"
 default[:cypress][:environment] = "production"
-default[:cypress][:enable_cron] = false
 default[:cypress][:app_config] = {}
 default[:cypress][:queue_count] = 1
 default[:cypress][:queue_names] =  ["calculation"]

@@ -8,7 +8,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Install required plugins
   plugins = ['vagrant-omnibus', "vagrant-berkshelf"]
-  # Vagrant does not detect new plugins right away. In order to get around this, if we 
+  # Vagrant does not detect new plugins right away. In order to get around this, if we
   # have added any plugins then we simply set reload to true and tell the user to re-run
   # the vagrant command.
   reload = false
@@ -22,7 +22,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         puts "Plugin installation failed. Please fix any errors above and try again."
         exit
       end
-    end 
+    end
   end
   if reload
     puts "Done installing plugins, however they cannot be accessed until the vagrant command is re-run."
@@ -58,18 +58,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #   vb.gui = true
   #
   # # Use VBoxManage to customize the VM. For example to change memory:
-    vb.customize ["modifyvm", :id, 
+    vb.customize ["modifyvm", :id,
       "--memory", "2048",
       "--cpus", "2"
     ]
   end
-  
+
   # The path to the Berksfile to use with Vagrant Berkshelf
   # config.berkshelf.berksfile_path = "./Berksfile"
 
   # Enabling the Berkshelf plugin. To enable this globally, add this configuration
   # option to your ~/.vagrant.d/Vagrantfile file
-  # Plugin must be installed from 
+  # Plugin must be installed from
   config.berkshelf.enabled = true
 
   config.vm.provision :chef_solo do |chef|
@@ -85,7 +85,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
     chef.cookbooks_path = "."
     chef.run_list = [
-        "recipe[apt]", "recipe[git]", "recipe[rvm::vagrant]", "recipe[cypress::default]", "recipe[cypress::cron]"
+        "recipe[apt]", "recipe[git]", "recipe[rvm::vagrant]", "recipe[cypress::default]"
     ]
   end
 end

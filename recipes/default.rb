@@ -186,5 +186,3 @@ service "apache2" do
   supports :start => true, :stop => true, :restart => true
   action [:enable, :restart]
 end
-
-include_recipe "cypress::cron" if node[:cypress][:enable_cron]
