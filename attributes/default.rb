@@ -1,13 +1,16 @@
+require 'securerandom'
+
 default[:cypress][:user] = "cypress"
 default[:cypress][:branch] = "master"
-default[:cypress][:ruby_version] = "2.1.5"
-default[:cypress][:passenger_version] = "4.0.50"
-default[:cypress][:git_repository] = "https://github.com/projectcypress/cypress.git"
+default[:cypress][:ruby_version] = "2.2"
+default[:cypress][:cypress_git_repository] = "https://github.com/projectcypress/cypress.git"
+default[:cypress][:cvu_git_repository] = "https://github.com/projectcypress/cypress.git"
 default[:cypress][:servername] = "localhost"
 default[:cypress][:environment] = "production"
 default[:cypress][:app_config] = {}
-default[:cypress][:queue_count] = 1
-default[:cypress][:queue_names] =  ["calculation"]
-override[:rvm][:group_users] = [default[:cypress][:user]]
-override[:rvm][:default_ruby] = default[:cypress][:ruby_version]
-override[:rvm][:gpg][:keyserver] = "hkp://keys.gnupg.net"
+default[:cypress][:cypress_install_path] = '/opt/cypress'
+default[:cypress][:cypress_secret_key] = SecureRandom.hex(64)
+
+default[:cypress][:cvu_install_path] = '/opt/cypress-validation-utility'
+default[:cypress][:cvu_secret_key] = SecureRandom.hex(64)
+default[:cypress][:install_cvu] = false

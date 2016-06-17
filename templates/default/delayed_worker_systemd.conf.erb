@@ -1,0 +1,16 @@
+[Unit]
+Description=cypress delayed_worker
+After=mongod.service
+Requires=mongod.service
+
+[Service]
+Type=forking
+User=<%= @username %>
+Environment=RAILS_ENV=<%= @rails_env %>
+WorkingDirectory=<%= @rails_app_path %>
+ExecStart=<%= @rails_app_path %>/bin/delayed_job start -n 3 --pid-dir=./tmp/delayed_pids
+ExecStop=<%= @rails_app_path %>/bin/delayed_job stop --pid-dir=./tmp/delayed_pids
+TimeoutSec=120
+
+[Install]
+WantedBy=multi-user.target
