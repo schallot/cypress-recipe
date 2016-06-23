@@ -1,3 +1,12 @@
+# precertification version ENV vars
+node.default[:cypress][:cypress_env_vars] =
+{
+  "AUTO_APPROVE" => "false",
+  "IGNORE_ROLES" => "true",
+  "ENABLE_DEBUG_FEATURES" => "true",
+  "DEFAULT_ROLE" => "",
+}
+
 include_recipe "cypress::install_cypress"
 include_recipe "cypress::install_cvu"
 

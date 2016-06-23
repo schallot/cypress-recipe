@@ -48,14 +48,17 @@ action :create do
   end
 
   ruby_version = new_resource.ruby_version
-  git_version = new_resource.git_repository
+  git_repo = new_resource.git_repository
+  git_rev = new_resource.git_revision
   username = new_resource.user
   secret_key = new_resource.secret_key
   server_port = new_resource.unicorn_port
+  env = new_resource.env_vars.dup
 
   application install_path do
     owner username
     group username
+    environment env
     ruby_runtime install_path do
       version ruby_version
       provider :ruby_build
@@ -64,7 +67,8 @@ action :create do
     git install_path do
       user username
       group username
-      repository git_version
+      repository git_repo
+      revision git_rev
     end
     bundle_install do
       deployment true
@@ -72,7 +76,6 @@ action :create do
     end
     rails do
       secret_token secret_key
-      precompile_assets true
       secrets_mode :yaml
     end
     unicorn do
