@@ -16,10 +16,10 @@ action :create do
 
   apt_repository "mongodb" do
     uri "http://repo.mongodb.org/apt/ubuntu"
-    distribution node['lsb']['codename'] + "/mongodb-org/3.2"
+    distribution "trusty" + "/mongodb-org/3.0"
     components ["multiverse"]
     keyserver "keyserver.ubuntu.com"
-    key "EA312927"
+    key "7F0CEB10"
   end
 
   # Install dependencies for cypress
