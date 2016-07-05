@@ -1,7 +1,7 @@
-# precertification version ENV vars
+# precertification version (cypress+cvu) ENV vars
 node.default[:cypress][:cypress_env_vars] =
 {
-  "AUTO_APPROVE" => "false",
+  "AUTO_APPROVE" => "true",
   "IGNORE_ROLES" => "true",
   "ENABLE_DEBUG_FEATURES" => "true",
   "DEFAULT_ROLE" => "",

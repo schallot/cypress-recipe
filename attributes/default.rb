@@ -1,10 +1,10 @@
 require 'securerandom'
 
 default[:cypress][:cypress_install_path] = '/opt/cypress'
-# ATL Version ENV Vars
+# ATL Version (cypress only) ENV Vars
 default[:cypress][:cypress_env_vars] =
 {
-  "AUTO_APPROVE" => "true",
+  "AUTO_APPROVE" => "false",
   "IGNORE_ROLES" => "false",
   "ENABLE_DEBUG_FEATURES" => "false",
   "DEFAULT_ROLE" => "",
