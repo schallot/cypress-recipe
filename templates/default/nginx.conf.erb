@@ -1,0 +1,58 @@
+upstream primary {
+  server localhost:<%= @primary_app_port %>;
+}
+
+<% if @enable_secondary_app -%>
+upstream secondary {
+  server localhost:<%= @secondary_app_port %>;
+}
+<% end -%>
+
+server {
+  listen 80;
+  server_name _;
+
+  root <%= @primary_app_path %>/public;
+
+  try_files $uri/index.html $uri @app;
+
+  location @app {
+    proxy_pass http://primary;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
+  }
+
+  <% if @enable_secondary_app -%>
+  location /cvu {
+    return 301 http://$host:<%= @secondary_app_ext_port %>;
+  }
+  <% end -%>
+
+  error_page 500 502 503 504 /500.html;
+  client_max_body_size 4G;
+  keepalive_timeout 10;
+}
+
+<% if @enable_secondary_app -%>
+server {
+  listen <%= @secondary_app_ext_port %>;
+  server_name _;
+
+  root <%= @secondary_app_path %>/public;
+
+  try_files $uri/index.html $uri @app;
+
+  location @app {
+    proxy_pass http://secondary;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
+  }
+
+  error_page 500 502 503 504 /500.html;
+  client_max_body_size 4G;
+  keepalive_timeout 10;
+}
+<% end -%>
+

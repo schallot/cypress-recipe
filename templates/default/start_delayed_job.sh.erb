@@ -1,7 +1,0 @@
-#!/bin/bash
-
-# This file actually starts the delayed worker
-
-cd <%= @cypress_path %>
-. <%= @rvm_path %>/scripts/rvm
-bundle exec rake jobs:work RAILS_ENV=<%= @rails_env %>

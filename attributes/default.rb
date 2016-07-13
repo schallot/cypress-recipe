@@ -1,14 +1,15 @@
-default[:cypress][:user] = "cypress"
-default[:cypress][:branch] = "master"
-default[:cypress][:ruby_version] = "2.1.5"
-default[:cypress][:passenger_version] = "4.0.50"
-default[:cypress][:git_repository] = "https://github.com/projectcypress/cypress.git"
-default[:cypress][:servername] = "localhost"
-default[:cypress][:environment] = "production"
-default[:cypress][:enable_cron] = false
-default[:cypress][:app_config] = {}
-default[:cypress][:queue_count] = 1
-default[:cypress][:queue_names] =  ["calculation"]
-override[:rvm][:group_users] = [default[:cypress][:user]]
-override[:rvm][:default_ruby] = default[:cypress][:ruby_version]
-override[:rvm][:gpg][:keyserver] = "hkp://keys.gnupg.net"
+require 'securerandom'
+
+default[:cypress][:cypress_install_path] = '/opt/cypress'
+# ATL Version (cypress only) ENV Vars
+default[:cypress][:cypress_env_vars] =
+{
+  "AUTO_APPROVE" => "false",
+  "IGNORE_ROLES" => "false",
+  "ENABLE_DEBUG_FEATURES" => "false",
+  "DEFAULT_ROLE" => "",
+}
+default[:cypress][:cypress_internal_port] = 8000
+default[:cypress][:cvu_install_path] = '/opt/cypress-validation-utility'
+default[:cypress][:cvu_internal_port] = 8001
+default[:cypress][:cvu_external_port] = 8080

@@ -1,0 +1,32 @@
+<%
+  # Use the runlist, attributes and other settings defined in node.json to
+  # ensure .kitchen.yml runs against the exact same configuration as Vagrantfile.
+  require 'json'
+  if !File.exist?('node.json')
+    puts 'Aborting .kitchen.yml: required node.json does not exist' unless File.exist?('node.json')
+    exit
+  else
+    node = JSON.parse(File.read('node.json'))
+  end
+%>
+---
+driver:
+  name: vagrant
+  customize:
+    memory: 4096
+    cpus: 4
+
+
+provisioner:
+  name: chef_zero
+
+platforms:
+  - name: ubuntu/xenial64
+    driver_config:
+      network:
+      - ["forwarded_port", {guest: 80, host: 8000, auto_correct: true}]
+      - ["forwarded_port", {guest: 8080, host: 8080, auto_correct: true}]
+
+suites:
+  - name: default
+    run_list: <%= node["run_list"] %>

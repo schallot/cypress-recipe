@@ -1,0 +1,16 @@
+[Unit]
+Description=delayed_worker
+After=mongod.service
+Requires=mongod.service
+
+[Service]
+Type=forking
+User=<%= @username %>
+Environment=RAILS_ENV=<%= @rails_env %>
+WorkingDirectory=<%= @rails_app_path %>
+ExecStart=/opt/ruby_build/builds<%= @rails_app_path %>/bin/ruby <%= @rails_app_path %>/bin/delayed_job start -n 2 --pid-dir=./tmp/delayed_pids
+ExecStop=/opt/ruby_build/builds<%= @rails_app_path %>/bin/ruby <%= @rails_app_path %>/bin/delayed_job stop -n 2 --pid-dir=./tmp/delayed_pids
+TimeoutSec=120
+
+[Install]
+WantedBy=multi-user.target
