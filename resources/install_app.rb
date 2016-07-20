@@ -13,3 +13,5 @@ attribute :environment, :kind_of => String, :default => "production"
 attribute :application_path, :kind_of => String, :default => '/opt/cypress'
 attribute :delayed_job, :kind_of => [TrueClass, FalseClass], :default => true
 attribute :env_vars, :kind_of => Hash, :default => {}
+attribute :secrets_path, :kind_of => String, :default => 'config/secrets.yml'
+attribute :generate_secrets_on_restart, :kind_of => [TrueClass, FalseClass], :default => false

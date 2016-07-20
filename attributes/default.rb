@@ -15,3 +15,4 @@ default[:cypress][:cvu_internal_port] = 8001
 default[:cypress][:cvu_external_port] = 8080
 default[:cypress][:cypress_git_revision] = 'master'
 default[:cypress][:cvu_git_revision] = 'master'
+default[:cypress][:generate_secrets_on_restart] = false

@@ -26,3 +26,26 @@ end
 service "nginx" do
   action :restart
 end
+
+# Create secrets regeneration script (only happens when generate_secrets_on_restart is true)
+cookbook_file '/opt/regenerate-secrets.sh' do
+  source "regenerate-secrets.sh"
+  mode "755"
+  only_if { node[:cypress][:generate_secrets_on_restart] }
+end
+
+template '/etc/systemd/system/regenerate-secrets.service' do
+  source "regenerate-secrets.service.erb"
+  variables({
+    :secrets_paths => [
+      "#{node[:cypress][:cypress_install_path]}/config/secrets.yml",
+      "#{node[:cypress][:cvu_install_path]}/config/secrets.yml"
+    ]
+  })
+  only_if { node[:cypress][:generate_secrets_on_restart] }
+end
+
+service "regenerate-secrets" do
+  action [:enable]
+  only_if { node[:cypress][:generate_secrets_on_restart] }
+end
