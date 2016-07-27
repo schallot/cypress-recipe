@@ -90,7 +90,8 @@ action :create do
     variables({
       :username => new_resource.user,
       :rails_app_path => install_path,
-      :rails_env => new_resource.environment
+      :rails_env => new_resource.environment,
+      :delayed_worker_count => 3
     })
     only_if { new_resource.delayed_job }
   end
