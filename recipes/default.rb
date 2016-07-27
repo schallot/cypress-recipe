@@ -37,6 +37,10 @@ end
 template '/etc/systemd/system/regenerate-secrets.service' do
   source "regenerate-secrets.service.erb"
   variables({
+    :service_names => [
+      node[:cypress][:cypress_install_path].split("/").last,
+      node[:cypress][:cvu_install_path].split("/").last
+    ],
     :secrets_paths => [
       "#{node[:cypress][:cypress_install_path]}/config/secrets.yml",
       "#{node[:cypress][:cvu_install_path]}/config/secrets.yml"

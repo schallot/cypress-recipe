@@ -122,7 +122,8 @@ action :create do
   template '/etc/systemd/system/regenerate-secrets.service' do
     source "regenerate-secrets.service.erb"
     variables({
-      :secrets_paths => ["#{install_path}/#{new_resource.secrets_path}"]
+      :service_names => [ install_path.split("/").last ],
+      :secrets_paths => [ "#{install_path}/#{new_resource.secrets_path}" ]
     })
     only_if { new_resource.generate_secrets_on_restart }
   end
