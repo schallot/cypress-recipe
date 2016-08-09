@@ -18,7 +18,22 @@ This recipe has been tested to work on Ubuntu 16.04 using the following install 
     git clone https://github.com/projectcypress/cypress-recipe.git
     cd cypress-recipe
     berks vendor cookbooks
-    sudo chef-client -z -j node.json
+
+You will now need to decide between whether you want to install cypress and the cypress validation utility, only cypress, or only the cypress validation utility.
+
+To install Cypress + Cypress Validation Utility run
+
+    sudo chef-client -z -j install_cypress_cvu.json
+
+To install Cypress only run
+
+    sudo chef-client -z -j install_cypress.json
+
+To install the Cypress Validation Utility only run
+
+    sudo chef-client -z -j install_cvu.json
+
+If you need to install both cypress and the cypress validation utility, make sure you run the first command, attempting to run the second and third installation commands in conjunction will not work properly.
 
 You will then need to follow the instructions provided [here](https://github.com/projectcypress/cypress/wiki/Cypress-3.0.0-Install-Instructions#virtual-machine) in order to import the measure bundle.
 
