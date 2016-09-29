@@ -78,7 +78,9 @@ action :create do
       secret_token secret_key
       secrets_mode :yaml
     end
-    unicorn do
+    # Defined in libraries/unicorn_config.rb
+    unicorn_config do
+      config_path "config/unicorn.rb"
       port server_port
     end
   end
