@@ -1,6 +1,11 @@
 action :create do
   install_path = new_resource.application_path
 
+  # Suggested by mongo (https://docs.mongodb.com/manual/tutorial/transparent-huge-pages/)
+  cookbook_file '/etc/systemd/system/disable-transparent-hugepages.service' do
+    source "disable-transparent-hugepages.service"
+  end
+
   user new_resource.user do
     supports :manage_home => true
     comment "#{new_resource.user} User"
@@ -41,6 +46,10 @@ action :create do
   # later time.
   cookbook_file '/etc/systemd/system/mongod.service' do
     source "mongod.service"
+  end
+
+  service "disable-transparent-hugepages" do
+    action [:start, :enable]
   end
 
   service "mongod" do
