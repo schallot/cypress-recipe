@@ -12,6 +12,7 @@ This recipe has been tested to work on Ubuntu 16.04 using the following install 
 
 ### Chef Solo
 
+    sudo apt-get update
     sudo apt-get -y install git-core wget
     wget https://packages.chef.io/stable/ubuntu/12.04/chefdk_0.15.16-1_amd64.deb
     sudo dpkg -i chefdk_0.15.16-1_amd64.deb
