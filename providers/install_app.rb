@@ -32,7 +32,7 @@ action :create do
     "openssl", "libssl-dev", "libreadline6", "libreadline6-dev",
     "curl", "zlib1g", "zlib1g-dev", "libyaml-dev", "libsqlite3-dev",
     "sqlite3", "libxml2-dev", "libxslt-dev", "autoconf", "libc6-dev",
-    "ncurses-dev", "automake", "libtool", "bison", "subversion",
+    "ncurses-dev", "automake", "libtool", "bison", "subversion", "ntp",
     "pkg-config", "libgmp3-dev", "nodejs", "g++", "mongodb-org", "nginx"
   ].each do |pkg|
     package pkg do

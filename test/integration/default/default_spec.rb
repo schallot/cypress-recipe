@@ -18,6 +18,11 @@ describe service 'cypress-validation-utility' do
   it { should be_running }
 end
 
+describe service 'cypress_delayed_worker' do
+  it { should be_enabled }
+  it { should be_running }
+end
+
 describe command 'curl localhost/users/sign_in' do
   its('stdout') { should match /Sign In/ }
   its('stdout') { should match /Sign up/ }
