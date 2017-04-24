@@ -21,10 +21,10 @@ action :create do
 
   apt_repository "mongodb" do
     uri "http://repo.mongodb.org/apt/ubuntu"
-    distribution "trusty" + "/mongodb-org/3.0"
+    distribution "xenial" + "/mongodb-org/3.4"
     components ["multiverse"]
     keyserver "keyserver.ubuntu.com"
-    key "7F0CEB10"
+    key "0C49F3730359A14518585931BC711F9BA15703C6"
   end
 
   # Install dependencies for cypress
@@ -38,14 +38,6 @@ action :create do
     package pkg do
       action :install
     end
-  end
-
-  # Mongodb packages do not contain a systemd init script,
-  # which is required on new versions of ubuntu. We add one manually
-  # in order to fix this issue. It may be safe to remove this at a
-  # later time.
-  cookbook_file '/etc/systemd/system/mongod.service' do
-    source "mongod.service"
   end
 
   service "disable-transparent-hugepages" do
