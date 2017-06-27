@@ -110,7 +110,7 @@ action :create do
     })
   end
 
-  3.times do |worker_num|
+  new_resource.delayed_job_count.times do |worker_num|
     service "#{new_resource.name}_delayed_worker@#{worker_num}" do
       action [:start, :enable]
       only_if { new_resource.delayed_job }
