@@ -87,14 +87,13 @@ action :create do
   end
 
   # For versions of ubuntu using Systemd
-  template "/etc/systemd/system/#{new_resource.name}_delayed_worker.service" do
+  template "/etc/systemd/system/#{new_resource.name}_delayed_worker@.service" do
     source "delayed_worker_systemd.conf.erb"
     mode "644"
     variables({
       :username => new_resource.user,
       :rails_app_path => install_path,
-      :rails_env => new_resource.environment,
-      :delayed_worker_count => 3
+      :rails_env => new_resource.environment
     })
     only_if { new_resource.delayed_job }
   end
@@ -107,13 +106,15 @@ action :create do
       :primary_app_path => install_path,
       :primary_app_port => server_port,
       :install_path => install_path,
-      :enable_secondary_app => false,
+      :enable_secondary_app => false
     })
   end
 
-  service "#{new_resource.name}_delayed_worker" do
-    action [:start, :enable]
-    only_if { new_resource.delayed_job }
+  new_resource.delayed_job_count.times do |worker_num|
+    service "#{new_resource.name}_delayed_worker@#{worker_num}" do
+      action [:start, :enable]
+      only_if { new_resource.delayed_job }
+    end
   end
 
   # Create secrets regeneration script (only happens when generate_secrets_on_restart is true)
