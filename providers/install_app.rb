@@ -33,11 +33,16 @@ action :create do
     "curl", "zlib1g", "zlib1g-dev", "libyaml-dev", "libsqlite3-dev",
     "sqlite3", "libxml2-dev", "libxslt-dev", "autoconf", "libc6-dev",
     "ncurses-dev", "automake", "libtool", "bison", "subversion",
-    "pkg-config", "libgmp3-dev", "nodejs", "g++", "mongodb-org", "nginx"
+    "pkg-config", "libgmp3-dev", "nodejs", "g++", "nginx"
   ].each do |pkg|
     package pkg do
       action :install
     end
+  end
+
+  package "mongodb-org" do
+    action :install
+    version '3.4.5'
   end
 
   service "disable-transparent-hugepages" do
