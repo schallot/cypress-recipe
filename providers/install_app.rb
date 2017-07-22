@@ -40,9 +40,20 @@ action :create do
     end
   end
 
-  package "mongodb-org" do
-    action :install
-    version '3.4.5'
+  # Chef doesn't seem to provide a way to specify that the package should
+  # both be installed and locked to a version so we're iterating to
+  # solve that, this is temporary code anyway until the problems with mongo
+  # 3.4.6 are solved.
+  [ :install, :lock ].each do |install_action|
+    [
+      "mongodb-org-mongos", "mongodb-org-server",
+      "mongodb-org-shell", "mongodb-org-tools", "mongodb-org"
+    ].each do |pkg|
+      package pkg do
+        action install_action
+        version '3.4.5'
+      end
+    end
   end
 
   service "disable-transparent-hugepages" do
