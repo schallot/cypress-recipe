@@ -33,10 +33,26 @@ action :create do
     "curl", "zlib1g", "zlib1g-dev", "libyaml-dev", "libsqlite3-dev",
     "sqlite3", "libxml2-dev", "libxslt-dev", "autoconf", "libc6-dev",
     "ncurses-dev", "automake", "libtool", "bison", "subversion",
-    "pkg-config", "libgmp3-dev", "nodejs", "g++", "mongodb-org", "nginx"
+    "pkg-config", "libgmp3-dev", "nodejs", "g++", "nginx"
   ].each do |pkg|
     package pkg do
       action :install
+    end
+  end
+
+  # Chef doesn't seem to provide a way to specify that the package should
+  # both be installed and locked to a version so we're iterating to
+  # solve that, this is temporary code anyway until the problems with mongo
+  # 3.4.6 are solved.
+  [ :install, :lock ].each do |install_action|
+    [
+      "mongodb-org-mongos", "mongodb-org-server",
+      "mongodb-org-shell", "mongodb-org-tools", "mongodb-org"
+    ].each do |pkg|
+      package pkg do
+        action install_action
+        version '3.4.5'
+      end
     end
   end
 
