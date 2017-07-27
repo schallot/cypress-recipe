@@ -14,7 +14,7 @@ This recipe has been tested to work on Ubuntu 16.04 using the following install 
 
     sudo apt-get update
     sudo apt-get -y install git-core wget
-    wget https://packages.chef.io/stable/ubuntu/12.04/chefdk_0.15.16-1_amd64.deb
+    wget https://packages.chef.io/files/stable/chefdk/1.5.0/ubuntu/16.04/chefdk_1.5.0-1_amd64.deb
     sudo dpkg -i chefdk_0.15.16-1_amd64.deb
     git clone https://github.com/projectcypress/cypress-recipe.git
     cd cypress-recipe
