@@ -44,7 +44,8 @@ If you wish to stand up a local copy of this recipe for testing, there is a test
 
 1. Install [Vagrant](http://www.vagrantup.com/downloads.html) ">= 1.5.2"
 2. Install [Virtualbox](https://www.virtualbox.org/) ">= 4.3.14"
-3. Install [ChefDK](http://getchef.com/downloads/chef-dk) ">= 0.2.0"
+3. Install [ChefDK](https://downloads.chef.io/chefdk) ">= 0.2.0"
+4. Run `bundle install` in the root of this repository.
 
-Once those steps are completed, you should be able to execute `kitchen test` with no problems.
+Once those steps are completed, you should be able to execute `bundle exec kitchen test` with no problems.
 
