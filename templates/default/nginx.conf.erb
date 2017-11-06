@@ -1,10 +1,10 @@
 upstream primary {
-  server localhost:<%= @primary_app_port %>;
+  server 127.0.0.1:<%= @primary_app_port %>;
 }
 
 <% if @enable_secondary_app -%>
 upstream secondary {
-  server localhost:<%= @secondary_app_port %>;
+  server 127.0.0.1:<%= @secondary_app_port %>;
 }
 <% end -%>
 
