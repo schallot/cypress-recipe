@@ -45,9 +45,16 @@ action :create do
     action [:start, :enable]
   end
 
-  package new_resource.name do
-    action :install
-    version new_resource.application_version
+  # Lock the version to whatever is installed by
+  # this Chef recipe in order to require the user
+  # to run the upgrade script to upgrade Cypress
+  # and also protect the user from accidently
+  # upgrading Cypress when they did not intend to
+  [ :install, :lock ].each do |install_action|
+    package new_resource.name do
+      action install_action
+      version new_resource.application_version
+    end
   end
 
   # Install the ntp service in order to make sure the time on
