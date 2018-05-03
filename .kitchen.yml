@@ -12,14 +12,14 @@
 ---
 driver:
   name: vagrant
-  product_version: 13.8
   customize:
     memory: 6144
     cpus: 4
 
 
 provisioner:
-  name: chef_zero
+  product_name: chef
+  product_version: 13.8
 
 verifier:
   name: inspec

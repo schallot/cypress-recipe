@@ -76,15 +76,12 @@ action :create do
   cypress_pkgr_env new_resource.name do
     key "PORT"
     value new_resource.unicorn_port.to_s
+    only_if { new_resource.frontend_worker_count > 0 }
   end
 
-  # Set cypress to run with 1 frontend unicorn worker. Note that
-  # any setting inside of config/unicorn.rb in the application is
-  # still respected to 1 web worker is actually 1 web worker with
-  # 4 worker processes if worker_processes is set to 4, for example.
   cypress_pkgr_env new_resource.name do
     key "web"
-    value 1.to_s
+    value new_resource.frontend_worker_count.to_s
     action :scale
   end
 
@@ -96,6 +93,7 @@ action :create do
 
   package 'nginx' do
     action :install
+    only_if { new_resource.frontend_worker_count > 0 }
   end
 
   # Setup nginx configuration
@@ -107,6 +105,7 @@ action :create do
       :primary_app_port => new_resource.unicorn_port,
       :enable_secondary_app => false
     })
+    only_if { new_resource.frontend_worker_count > 0 }
   end
 
   template '/etc/systemd/system/regenerate-secrets.service' do
@@ -124,5 +123,6 @@ action :create do
 
   service "nginx" do
     action :restart
+    only_if { new_resource.frontend_worker_count > 0 }
   end
 end
