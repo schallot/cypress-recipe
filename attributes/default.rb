@@ -30,3 +30,4 @@ default[:cypress][:cvu_external_port] = 8080
 default[:cypress][:generate_secrets_on_restart] = false
 
 force_default['erlang']['install_method'] = "esl"
+force_default['erlang']['esl']['version'] = "1:20.3.6"

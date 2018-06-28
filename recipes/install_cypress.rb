@@ -9,6 +9,12 @@ cypress_install_app 'js-ecqm-engine' do
   generate_secrets_on_restart false
 end
 
+# This is necessary due to https://github.com/rabbitmq/chef-cookbook/commit/c7a37ccfcfe2444d0ff8f567c33da0be055357f8
+package 'esl-erlang' do
+  action :lock
+  version node['erlang']['esl']['version']
+end
+
 cypress_install_app 'cypress' do
   application_path node[:cypress][:cypress_install_path]
   application_version node[:cypress][:cypress_version]
