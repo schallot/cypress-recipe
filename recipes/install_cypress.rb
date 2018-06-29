@@ -6,7 +6,25 @@ cypress_install_app 'js-ecqm-engine' do
   repository node[:cypress][:js_ecqm_repository]
   repository_key node[:cypress][:js_ecqm_repository_key]
   frontend_worker_count 0
+  delayed_job_count 0
   generate_secrets_on_restart false
+end
+
+cookbook_file '/opt/js-ecqm-engine/vendor/pkgr/scaling/systemd/js-ecqm-engine-worker-PROCESS_NUM.service' do
+  source "js-ecqm-engine-worker-PROCESS_NUM.service"
+end
+
+# Have to do this after the hack above is applied
+cypress_pkgr_env 'js-ecqm-engine' do
+  key "worker"
+  value '3'
+  action :scale
+end
+
+# This is necessary due to https://github.com/rabbitmq/chef-cookbook/commit/c7a37ccfcfe2444d0ff8f567c33da0be055357f8
+package 'esl-erlang' do
+  action :lock
+  version node['erlang']['esl']['version']
 end
 
 cypress_install_app 'cypress' do

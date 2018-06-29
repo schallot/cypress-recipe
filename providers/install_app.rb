@@ -41,6 +41,11 @@ action :create do
     action [:start, :enable]
   end
 
+  cookbook_file '/etc/mongod.conf' do
+    source "mongod.conf"
+    notifies :restart, 'service[mongod]'
+  end
+
   service "mongod" do
     action [:start, :enable]
   end
