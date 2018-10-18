@@ -36,7 +36,7 @@ To install the Cypress Validation Utility only run
 
 If you need to install both cypress and the cypress validation utility, make sure you run the first command, attempting to run the second and third installation commands in conjunction will not work properly.
 
-You will then need to follow the instructions provided [here](https://github.com/projectcypress/cypress/wiki/Cypress-3.0.0-Install-Instructions#virtual-machine) in order to import the measure bundle for cypress, if you installed the Cypress Validation Utility then you will need to follow the instructions located [here](https://github.com/projectcypress/cypress/wiki/Cypress-Validation-Utility-Initial-Setup) to import the bundle for the CVU as well.
+Instructions for importing a bundle can be found [here](https://github.com/projectcypress/cypress/wiki/Cypress-4-Initial-Setup).
 
 ## Developing using Test Kitchen
 
