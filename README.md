@@ -1,6 +1,8 @@
+[![GitHub version](https://badge.fury.io/gh/projectcypress%2Fcypress-recipe.svg)](https://badge.fury.io/gh/projectcypress%2Fcypress-recipe)
+
 ## About
 
-This recipe is designed to make it easier to deploy cypress quickly.
+This repository includes a Chef recipe for deploying [Cypress](https://www.healthit.gov/cypress/).
 
 ### What it doesn't do:
 - It will not download and import the measure bundle (see section on Importing Measure Bundle below)
@@ -49,3 +51,18 @@ If you wish to stand up a local copy of this recipe for testing, there is a test
 
 Once those steps are completed, you should be able to execute `bundle exec kitchen test` with no problems.
 
+## License
+
+Copyright 2013 The MITRE Corporation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
