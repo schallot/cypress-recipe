@@ -16,7 +16,7 @@ action :create do
 
   apt_repository new_resource.name do
     uri new_resource.repository
-    distribution "16.04"
+    distribution "18.04"
     components ["main"]
     key new_resource.repository_key
   end
