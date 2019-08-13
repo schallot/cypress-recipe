@@ -8,33 +8,22 @@ This recipe is designed to make it easier to deploy cypress quickly.
 - Does not configure networking
 
 ## Installation Options
-This recipe has been tested to work on Ubuntu 16.04 using the following install method:
+This recipe has been tested to work on Ubuntu 18.04 using the following install method:
 
 ### Chef Solo
 
     sudo apt-get update
     sudo apt-get -y install git-core wget
-    wget https://packages.chef.io/files/stable/chefdk/1.5.0/ubuntu/16.04/chefdk_1.5.0-1_amd64.deb
-    sudo dpkg -i chefdk_1.5.0-1_amd64.deb
+    wget https://packages.chef.io/files/stable/chefdk/3.2.30/ubuntu/18.04/chefdk_3.2.30-1_amd64.deb
+    sudo dpkg -i chefdk_3.2.30-1_amd64.deb
     git clone https://github.com/projectcypress/cypress-recipe.git
     cd cypress-recipe
+    git checkout cypress_v5
     berks vendor cookbooks
-
-You will now need to decide between whether you want to install cypress and the cypress validation utility, only cypress, or only the cypress validation utility.
-
-To install Cypress + Cypress Validation Utility run
-
-    sudo chef-client -z -j install_cypress_cvu.json
 
 To install Cypress only run
 
     sudo chef-client -z -j install_cypress.json
-
-To install the Cypress Validation Utility only run
-
-    sudo chef-client -z -j install_cvu.json
-
-If you need to install both cypress and the cypress validation utility, make sure you run the first command, attempting to run the second and third installation commands in conjunction will not work properly.
 
 Instructions for importing a bundle can be found [here](https://github.com/projectcypress/cypress/wiki/Cypress-4-Initial-Setup).
 
