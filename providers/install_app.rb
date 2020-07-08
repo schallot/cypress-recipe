@@ -8,10 +8,10 @@ action :create do
 
   apt_repository "mongodb" do
     uri "http://repo.mongodb.org/apt/ubuntu"
-    distribution "xenial" + "/mongodb-org/3.4"
+    distribution "bionic" + "/mongodb-org/4.0"
     components ["multiverse"]
     keyserver "keyserver.ubuntu.com"
-    key "0C49F3730359A14518585931BC711F9BA15703C6"
+    key "9DA31620334BD75D9DCB49F368818C72E52529D4"
   end
 
   apt_repository new_resource.name do
@@ -32,7 +32,7 @@ action :create do
     ].each do |pkg|
       package pkg do
         action install_action
-        version '3.4.5'
+        version '4.0.18'
       end
     end
   end
@@ -129,5 +129,14 @@ action :create do
   service "nginx" do
     action :restart
     only_if { new_resource.frontend_worker_count > 0 }
+  end
+
+  cookbook_file "/tmp/network.sh" do
+    source "network.sh"
+    mode 0755
+  end
+  
+  execute "network setup" do
+    command "sh /tmp/network.sh"
   end
 end
