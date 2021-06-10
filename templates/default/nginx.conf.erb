@@ -23,6 +23,11 @@ server {
     proxy_redirect off;
   }
 
+  location /api {
+    alias <%= @primary_app_path %>/api;
+    index documentation.html;
+  }
+
   <% if @enable_secondary_app -%>
   location /cvu {
     return 301 http://$host:<%= @secondary_app_ext_port %>;
