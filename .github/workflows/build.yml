@@ -33,9 +33,11 @@ jobs:
       run: |
         ls
         cd cypress-recipe
+        ls
         bundle install
         berks vendor cypress/contrib/cookbooks/
         cd ../cypress/contrib
+        ls
     - name: Build AMI
       uses: hashicorp/packer-github-actions@master
       with:
