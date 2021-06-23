@@ -34,10 +34,10 @@ jobs:
         cd cypress-recipe
         bundle install
         berks vendor cypress/contrib/cookbooks/
-        cd ../cypress
+        cd ../cypress/contrib
     - name: Build AMI
       uses: hashicorp/packer-github-actions@master
       with:
         command: build
         arguments: "-var-file=aws_env.json -only=cypress.amazonaws cypress.json"
-        target: ./contrib
+        target: cypress/contrib
