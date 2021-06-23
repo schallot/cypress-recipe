@@ -27,6 +27,7 @@ jobs:
       with: 
         repository: 'projectcypress/cypress'
         path: 'cypress'
+        ref: 'testing_build_release'
 
     - name: Set up Ruby
       uses: ruby/setup-ruby@b12138f02d7d0c4d36f463e0885dc47ec25a52fe
