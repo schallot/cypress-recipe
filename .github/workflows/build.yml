@@ -31,6 +31,7 @@ jobs:
 
     - name: Provision Cookbook
       run: |
+        ls
         cd cypress-recipe
         bundle install
         berks vendor cypress/contrib/cookbooks/
