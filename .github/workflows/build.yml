@@ -31,8 +31,8 @@ jobs:
 
     - name: Provision Cookbook
       run: |
-        bundle install
         cd cypress-recipe
+        bundle install
         berks vendor cypress/contrib/cookbooks/
         cd ../cypress
     - name: Build AMI
