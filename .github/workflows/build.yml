@@ -39,5 +39,5 @@ jobs:
       uses: hashicorp/packer-github-actions@master
       with:
         command: build
-        arguments: "-var 'aws_access_key={{secrets.AWS_ACCESS_KEY}}' -var 'aws_secret_key={{secrets.AWS_SECRET_KEY}}' -var 'vpc_id={{secrets.VPC_ID}}' -var 'subnet_id={{secrets.SUBNET_ID}}' -only=cypress.amazonaws"
+        arguments: "-var 'aws_access_key=${{secrets.AWS_ACCESS_KEY}}' -var 'aws_secret_key=${{secrets.AWS_SECRET_KEY}}' -var 'vpc_id=${{secrets.VPC_ID}}' -var 'subnet_id=${{secrets.SUBNET_ID}}' -only=cypress.amazonaws"
         target: cypress/contrib/cypress.json
