@@ -19,7 +19,7 @@ jobs:
     - name: Checkout recipe
       uses: actions/checkout@v2
       with: 
-        repository: 'https://github.com/projectcypress/cypress.git'
+        repository: 'projectcypress/cypress.git'
 
     - name: Set up Ruby
       uses: ruby/setup-ruby@b12138f02d7d0c4d36f463e0885dc47ec25a52fe
