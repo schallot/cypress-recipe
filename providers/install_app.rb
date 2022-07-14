@@ -8,10 +8,10 @@ action :create do
 
   apt_repository "mongodb" do
     uri "http://repo.mongodb.org/apt/ubuntu"
-    distribution "bionic" + "/mongodb-org/4.0"
+    distribution "bionic" + "/mongodb-org/4.4"
     components ["multiverse"]
     keyserver "keyserver.ubuntu.com"
-    key "9DA31620334BD75D9DCB49F368818C72E52529D4"
+    key "20691eec35216c63caf66ce1656408e390cfb1f5"
   end
 
   apt_repository new_resource.name do
@@ -32,7 +32,7 @@ action :create do
     ].each do |pkg|
       package pkg do
         action install_action
-        version '4.0.18'
+        version '4.4.14'
       end
     end
   end
