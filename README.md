@@ -18,7 +18,7 @@ This recipe has been tested to work on Ubuntu 18.04 using the following install 
     sudo dpkg -i chefdk_3.2.30-1_amd64.deb
     git clone https://github.com/projectcypress/cypress-recipe.git
     cd cypress-recipe
-    git checkout cypress_v6
+    git checkout cypress_v7
     berks vendor cookbooks
 
 To install Cypress only run
