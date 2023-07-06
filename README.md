@@ -8,7 +8,7 @@ This recipe is designed to make it easier to deploy cypress quickly.
 - Does not configure networking
 
 ## Installation Options
-This recipe has been tested to work on Ubuntu 18.04 using the following install method:
+This recipe has been tested to work on Ubuntu 22.04 using the following install method:
 
 ### Chef Solo
 
