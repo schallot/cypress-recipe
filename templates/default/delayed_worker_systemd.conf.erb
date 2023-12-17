@@ -1,5 +1,7 @@
 [Unit]
 Description=delayed_worker_%i
+After=mongod.service
+Requires=mongod.service
 
 [Service]
 Type=simple
