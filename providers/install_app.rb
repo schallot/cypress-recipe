@@ -1,53 +1,11 @@
 action :create do
   install_path = new_resource.application_path
 
-  # Suggested by mongo (https://docs.mongodb.com/manual/tutorial/transparent-huge-pages/)
-  cookbook_file '/etc/systemd/system/disable-transparent-hugepages.service' do
-    source "disable-transparent-hugepages.service"
-  end
-
-  apt_repository "mongodb" do
-    uri "http://repo.mongodb.org/apt/ubuntu"
-    distribution "jammy" + "/mongodb-org/6.0"
-    components ["multiverse"]
-    keyserver "keyserver.ubuntu.com"
-    key "39bd841e4be5fb195a65400e6a26b1ae64c3c388"
-  end
-
   apt_repository new_resource.name do
     uri new_resource.repository
     distribution "22.04"
     components ["main"]
     key new_resource.repository_key
-  end
-
-  # Chef doesn't seem to provide a way to specify that the package should
-  # both be installed and locked to a version so we're iterating to
-  # solve that, this is temporary code anyway until the problems with mongo
-  # 3.4.6 are solved.
-  [ :install, :lock ].each do |install_action|
-    [
-      "mongodb-org-mongos", "mongodb-org-server",
-      "mongodb-org-shell", "mongodb-org-tools", "mongodb-org"
-    ].each do |pkg|
-      package pkg do
-        action install_action
-        version '6.0.6'
-      end
-    end
-  end
-
-  service "disable-transparent-hugepages" do
-    action [:start, :enable]
-  end
-
-  cookbook_file '/etc/mongod.conf' do
-    source "mongod.conf"
-    notifies :restart, 'service[mongod]'
-  end
-
-  service "mongod" do
-    action [:start, :enable]
   end
 
   # Lock the version to whatever is installed by
